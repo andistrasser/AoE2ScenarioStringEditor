@@ -7,6 +7,7 @@ from tkinter import ttk
 APP_TITLE = "AoE2ScenarioStringEditor"
 THEME_DEFAULT = "clam"
 THEME_WINDOWS = "vista"
+LABEL_TAB_GENERAL = "General"
 LABEL_TAB_PLAYERS = "Players"
 LABEL_TAB_MESSAGES = "Messages"
 LABEL_TAB_TRIGGERS = "Triggers"
@@ -64,9 +65,11 @@ class App(tk.Tk):
         # tab view
         self.tab_view = ttk.Notebook(self)
 
+        self.tab_general = ttk.Frame(self.tab_view)
         self.tab_players = ttk.Frame(self.tab_view)
         self.tab_messages = ttk.Frame(self.tab_view)
         self.tab_triggers = ttk.Frame(self.tab_view)
+        self.tab_view.add(self.tab_general, text=LABEL_TAB_GENERAL)
         self.tab_view.add(self.tab_players, text=LABEL_TAB_PLAYERS)
         self.tab_view.add(self.tab_messages, text=LABEL_TAB_MESSAGES)
         self.tab_view.add(self.tab_triggers, text=LABEL_TAB_TRIGGERS)
@@ -78,12 +81,12 @@ class App(tk.Tk):
 
         for player_index in range(1, 9):
             label_player = ttk.Label(self.tab_players, text=(LABEL_PLAYER + str(player_index) + ":"))
-            label_player.grid(row=(player_index - 1), column=0, padx=10, pady=10, sticky="e")
+            label_player.grid(row=(player_index - 1), column=0, padx=10, pady=(10, 0), sticky="e")
 
             self.player_labels.append(label_player)
 
             entry_player = ttk.Entry(self.tab_players, width=35)
-            entry_player.grid(row=(player_index - 1), column=1, padx=0, pady=10, sticky="ew")
+            entry_player.grid(row=(player_index - 1), column=1, padx=0, pady=(10, 0), sticky="ew")
 
             self.player_entries.append(entry_player)
 
