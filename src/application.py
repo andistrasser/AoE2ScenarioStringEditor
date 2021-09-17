@@ -51,6 +51,7 @@ class App(tk.Tk):
         # file menu
         menu_file = tk.Menu(self.menu_bar, tearoff=0)
         menu_file.add_command(label="Open", accelerator="Ctrl+O")
+        menu_file.add_command(label="Reload", accelerator="Ctrl+R")
         menu_file.add_command(label="Save", accelerator="Ctrl+S")
         menu_file.add_command(label="Save as", accelerator="Shift+Ctrl+S")
         menu_file.add_separator()
