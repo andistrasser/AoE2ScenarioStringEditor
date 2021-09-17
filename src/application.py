@@ -75,7 +75,7 @@ class App(tk.Tk):
         self.tab_view.add(self.tab_players, text=LABEL_TAB_PLAYERS)
         self.tab_view.add(self.tab_messages, text=LABEL_TAB_MESSAGES)
         self.tab_view.add(self.tab_triggers, text=LABEL_TAB_TRIGGERS)
-        self.tab_view.add(self.tab_triggers, text=LABEL_TAB_RAW)
+        self.tab_view.add(self.tab_raw, text=LABEL_TAB_RAW)
         self.tab_view.grid(row=0, column=0, padx=10, pady=10, sticky="ewns")
 
         # player tab content
