@@ -11,6 +11,7 @@ LABEL_TAB_GENERAL = "General"
 LABEL_TAB_PLAYERS = "Players"
 LABEL_TAB_MESSAGES = "Messages"
 LABEL_TAB_TRIGGERS = "Triggers"
+LABEL_TAB_RAW = "Raw Content"
 LABEL_SAVE = "Save"
 LABEL_PLAYER = "Player "
 
@@ -69,10 +70,12 @@ class App(tk.Tk):
         self.tab_players = ttk.Frame(self.tab_view)
         self.tab_messages = ttk.Frame(self.tab_view)
         self.tab_triggers = ttk.Frame(self.tab_view)
+        self.tab_raw = ttk.Frame(self.tab_view)
         self.tab_view.add(self.tab_general, text=LABEL_TAB_GENERAL)
         self.tab_view.add(self.tab_players, text=LABEL_TAB_PLAYERS)
         self.tab_view.add(self.tab_messages, text=LABEL_TAB_MESSAGES)
         self.tab_view.add(self.tab_triggers, text=LABEL_TAB_TRIGGERS)
+        self.tab_view.add(self.tab_triggers, text=LABEL_TAB_RAW)
         self.tab_view.grid(row=0, column=0, padx=10, pady=10, sticky="ewns")
 
         # player tab content
