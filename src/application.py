@@ -11,6 +11,7 @@ LABEL_TAB_PLAYERS = "Players"
 LABEL_TAB_MESSAGES = "Messages"
 LABEL_TAB_TRIGGERS = "Triggers"
 LABEL_SAVE = "Save"
+LABEL_PLAYER = "Player "
 
 
 # application class
@@ -21,7 +22,7 @@ class App(tk.Tk):
 
     # creates a window and places widgets on it
     def _build_ui(self):
-        self.geometry("720x450")
+        self.geometry("720x470")
         self.title(APP_TITLE)
         self.style = ttk.Style(self)
 
@@ -48,11 +49,24 @@ class App(tk.Tk):
         self.tab_view.add(self.tab_players, text=LABEL_TAB_PLAYERS)
         self.tab_view.add(self.tab_messages, text=LABEL_TAB_MESSAGES)
         self.tab_view.add(self.tab_triggers, text=LABEL_TAB_TRIGGERS)
-        self.tab_view.pack(expand=1, fill="both")
         self.tab_view.grid(row=0, column=0, padx=10, pady=10, sticky="ewns")
+
+        self.player_labels = []
+        self.player_entries = []
+
+        for player_index in range(1, 9):
+            label_player = ttk.Label(self.tab_players, text=(LABEL_PLAYER + str(player_index) + ":"))
+            label_player.grid(row=(player_index - 1), column=0, padx=10, pady=10, sticky="e")
+
+            self.player_labels.append(label_player)
+
+            entry_player = ttk.Entry(self.tab_players, width=35)
+            entry_player.grid(row=(player_index - 1), column=1, padx=0, pady=10, sticky="ew")
+
+            self.player_entries.append(entry_player)
 
         self.button_save = ttk.Button(self, text=LABEL_SAVE)
         self.button_save.grid(row=1, column=0, padx=10, pady=10, sticky="e")
 
-        self.columnconfigure(0, weight=3)
-        self.rowconfigure(0, weight=3)
+        self.columnconfigure(0, weight=1)
+        self.rowconfigure(0, weight=1)
