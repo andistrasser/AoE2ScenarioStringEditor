@@ -13,9 +13,16 @@ LABEL_TAB_PLAYERS = "Players"
 LABEL_TAB_MESSAGES = "Messages"
 LABEL_TAB_TRIGGERS = "Triggers"
 LABEL_TAB_RAW = "Raw"
-LABEL_SAVE = "Save"
 LABEL_PLAYER = "Player "
 LABEL_APPLY = "Apply"
+LABEL_OPEN = "Open"
+LABEL_RELOAD = "Reload"
+LABEL_SAVE = "Save"
+LABEL_SAVE_AS = "Save as"
+LABEL_EXIT = "Exit"
+LABEL_FILE = "File"
+LABEL_HELP = "Help"
+LABEL_ABOUT = "About"
 
 
 # application class
@@ -50,19 +57,19 @@ class App(tk.Tk):
 
         # file menu
         menu_file = tk.Menu(self.menu_bar, tearoff=0)
-        menu_file.add_command(label="Open", accelerator="Ctrl+O")
-        menu_file.add_command(label="Reload", accelerator="Ctrl+R")
-        menu_file.add_command(label="Save", accelerator="Ctrl+S")
-        menu_file.add_command(label="Save as", accelerator="Shift+Ctrl+S")
+        menu_file.add_command(label=LABEL_OPEN, accelerator="Ctrl+O")
+        menu_file.add_command(label=LABEL_RELOAD, accelerator="Ctrl+R")
+        menu_file.add_command(label=LABEL_SAVE, accelerator="Ctrl+S")
+        menu_file.add_command(label=LABEL_SAVE_AS, accelerator="Shift+Ctrl+S")
         menu_file.add_separator()
-        menu_file.add_command(label="Exit", command=self.quit, accelerator="Ctrl+Q")
-        self.menu_bar.add_cascade(label="File", underline=0, menu=menu_file)
+        menu_file.add_command(label=LABEL_EXIT, command=self.quit, accelerator="Ctrl+Q")
+        self.menu_bar.add_cascade(label=LABEL_FILE, underline=0, menu=menu_file)
 
         # help menu
         menu_help = tk.Menu(self.menu_bar, tearoff=0)
-        menu_help.add_command(label="Help", accelerator="F1")
-        menu_help.add_command(label="About")
-        self.menu_bar.add_cascade(label="Help", underline=0, menu=menu_help)
+        menu_help.add_command(label=LABEL_HELP, accelerator="F1")
+        menu_help.add_command(label=LABEL_ABOUT)
+        self.menu_bar.add_cascade(label=LABEL_HELP, underline=0, menu=menu_help)
 
         self.config(menu=self.menu_bar)
 
