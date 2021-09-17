@@ -41,6 +41,23 @@ class App(tk.Tk):
         else:
             self.style.theme_use(THEME_DEFAULT)
 
+        self.menu_bar = tk.Menu(self)
+
+        menu_file = tk.Menu(self.menu_bar, tearoff=0)
+        menu_file.add_command(label="Open", accelerator="Ctrl+O")
+        menu_file.add_command(label="Save", accelerator="Ctrl+S")
+        menu_file.add_command(label="Save as", accelerator="Shift+Ctrl+S")
+        menu_file.add_separator()
+        menu_file.add_command(label="Exit", command=self.quit, accelerator="Ctrl+Q")
+        self.menu_bar.add_cascade(label="File", underline=0, menu=menu_file)
+
+        menu_help = tk.Menu(self.menu_bar, tearoff=0)
+        menu_help.add_command(label="Help", accelerator="F1")
+        menu_help.add_command(label="About")
+        self.menu_bar.add_cascade(label="Help", underline=0, menu=menu_help)
+
+        self.config(menu=self.menu_bar)
+
         self.tab_view = ttk.Notebook(self)
 
         self.tab_players = ttk.Frame(self.tab_view)
