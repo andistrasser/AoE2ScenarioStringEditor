@@ -41,8 +41,10 @@ class App(tk.Tk):
         else:
             self.style.theme_use(THEME_DEFAULT)
 
+        # menu bar
         self.menu_bar = tk.Menu(self)
 
+        # file menu
         menu_file = tk.Menu(self.menu_bar, tearoff=0)
         menu_file.add_command(label="Open", accelerator="Ctrl+O")
         menu_file.add_command(label="Save", accelerator="Ctrl+S")
@@ -51,6 +53,7 @@ class App(tk.Tk):
         menu_file.add_command(label="Exit", command=self.quit, accelerator="Ctrl+Q")
         self.menu_bar.add_cascade(label="File", underline=0, menu=menu_file)
 
+        # help menu
         menu_help = tk.Menu(self.menu_bar, tearoff=0)
         menu_help.add_command(label="Help", accelerator="F1")
         menu_help.add_command(label="About")
@@ -58,6 +61,7 @@ class App(tk.Tk):
 
         self.config(menu=self.menu_bar)
 
+        # tab view
         self.tab_view = ttk.Notebook(self)
 
         self.tab_players = ttk.Frame(self.tab_view)
@@ -68,6 +72,7 @@ class App(tk.Tk):
         self.tab_view.add(self.tab_triggers, text=LABEL_TAB_TRIGGERS)
         self.tab_view.grid(row=0, column=0, padx=10, pady=10, sticky="ewns")
 
+        # player tab content
         self.player_labels = []
         self.player_entries = []
 
