@@ -87,8 +87,5 @@ class App(tk.Tk):
 
             self.player_entries.append(entry_player)
 
-        self.button_save = ttk.Button(self, text=LABEL_SAVE)
-        self.button_save.grid(row=1, column=0, padx=10, pady=10, sticky="e")
-
         self.columnconfigure(0, weight=1)
         self.rowconfigure(0, weight=1)
