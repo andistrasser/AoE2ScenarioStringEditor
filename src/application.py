@@ -12,7 +12,7 @@ LABEL_TAB_GENERAL = "General"
 LABEL_TAB_PLAYERS = "Players"
 LABEL_TAB_MESSAGES = "Messages"
 LABEL_TAB_TRIGGERS = "Triggers"
-LABEL_TAB_RAW = "Raw Content"
+LABEL_TAB_RAW = "Raw"
 LABEL_SAVE = "Save"
 LABEL_PLAYER = "Player "
 LABEL_APPLY = "Apply"
@@ -95,6 +95,7 @@ class App(tk.Tk):
 
             self.player_entries.append(entry_player)
 
+        # raw tab content
         self.textfield_raw = scrolledtext.ScrolledText(self.tab_raw)
         self.textfield_raw.grid(row=0, column=0, padx=10, pady=10, sticky="ewns")
         self.tab_raw.columnconfigure(0, weight=1)
