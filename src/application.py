@@ -1,6 +1,7 @@
 import os
 import sys
 import tkinter as tk
+from tkinter import scrolledtext
 from tkinter import ttk
 
 # constants
@@ -14,6 +15,7 @@ LABEL_TAB_TRIGGERS = "Triggers"
 LABEL_TAB_RAW = "Raw Content"
 LABEL_SAVE = "Save"
 LABEL_PLAYER = "Player "
+LABEL_APPLY = "Apply"
 
 
 # application class
@@ -92,6 +94,14 @@ class App(tk.Tk):
             entry_player.grid(row=(player_index - 1), column=1, padx=0, pady=(10, 0), sticky="ew")
 
             self.player_entries.append(entry_player)
+
+        self.textfield_raw = scrolledtext.ScrolledText(self.tab_raw)
+        self.textfield_raw.grid(row=0, column=0, padx=10, pady=10, sticky="ewns")
+        self.tab_raw.columnconfigure(0, weight=1)
+        self.tab_raw.rowconfigure(0, weight=1)
+
+        self.button_apply = ttk.Button(self.tab_raw, text=LABEL_APPLY)
+        self.button_apply.grid(row=1, column=0, padx=10, pady=(0, 10), sticky="e")
 
         self.columnconfigure(0, weight=1)
         self.rowconfigure(0, weight=1)
