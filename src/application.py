@@ -130,6 +130,18 @@ class App(tk.Tk):
         self.tab_messages.columnconfigure(1, weight=1)
         self.tab_messages.rowconfigure(0, weight=1)
 
+        # triggers tab content
+        self.listbox_triggers = tk.Listbox(self.tab_triggers, width=60)
+        self.listbox_triggers.grid(row=0, column=0, padx=(10, 0), pady=10, sticky="ewns")
+        # self.listbox_triggers.insert(1, "[D] Refugees Spawn (one time) - E#0: Display Instructions")
+        # self.listbox_triggers.insert(2, "[D] First Group in East - E#0: Display Instructions")
+
+        self.textfield_triggers = scrolledtext.ScrolledText(self.tab_triggers)
+        self.textfield_triggers.grid(row=0, column=1, padx=10, pady=10, sticky="ewns")
+        self.tab_triggers.columnconfigure(0, weight=1)
+        self.tab_triggers.columnconfigure(1, weight=1)
+        self.tab_triggers.rowconfigure(0, weight=1)
+
         # raw tab content
         self.textfield_raw = scrolledtext.ScrolledText(self.tab_raw)
         self.textfield_raw.grid(row=0, column=0, padx=10, pady=10, sticky="ewns")
