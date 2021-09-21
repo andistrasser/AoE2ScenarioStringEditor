@@ -31,7 +31,12 @@ COMBOBOX_MESSAGES_CONTENT = ["Scenario Instructions", "Hints", "Victory", "Loss"
 class App(tk.Tk):
     def __init__(self):
         super().__init__()
+        self._init()
         self._build_ui()
+
+    # initialize variables
+    def _init(self):
+        self.file_name = ""
 
     # creates a window and places widgets on it
     def _build_ui(self):
