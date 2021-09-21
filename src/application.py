@@ -23,6 +23,7 @@ LABEL_EXIT = "Exit"
 LABEL_FILE = "File"
 LABEL_HELP = "Help"
 LABEL_ABOUT = "About"
+COMBOBOX_MESSAGES_CONTENT = ["Scenario Instructions", "Hints", "Victory", "Loss", "History", "Scout"]
 
 
 # application class
@@ -102,6 +103,24 @@ class App(tk.Tk):
             entry_player.grid(row=(player_index - 1), column=1, padx=0, pady=(10, 0), sticky="ew")
 
             self.player_entries.append(entry_player)
+
+        # messages tab content
+        frame_messages_left = tk.Frame(self.tab_messages)
+        frame_messages_left.grid(row=0, column=0, sticky="nw")
+
+        self.combobox_message = ttk.Combobox(frame_messages_left, values=COMBOBOX_MESSAGES_CONTENT)
+        self.combobox_message.grid(row=0, column=0, padx=(10, 0), pady=10, sticky="w")
+        self.combobox_message.current(0)
+
+        frame_messages_right = tk.Frame(self.tab_messages)
+        frame_messages_right.grid(row=0, column=1, sticky="ewns")
+
+        self.textfield_message = scrolledtext.ScrolledText(frame_messages_right)
+        self.textfield_message.grid(row=0, column=0, padx=10, pady=10, sticky="ewns")
+        frame_messages_right.columnconfigure(0, weight=1)
+        frame_messages_right.rowconfigure(0, weight=1)
+        self.tab_messages.columnconfigure(1, weight=1)
+        self.tab_messages.rowconfigure(0, weight=1)
 
         # raw tab content
         self.textfield_raw = scrolledtext.ScrolledText(self.tab_raw)
