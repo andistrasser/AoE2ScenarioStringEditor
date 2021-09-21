@@ -176,6 +176,10 @@ class App(tk.Tk):
     def _open_file(self):
         self.file_path = askopenfilename(filetypes=FILETYPES)
         self.scenario_handler = ScenarioHandler(self.file_path)
+
+        if len(self.file_path) == 0:
+            return
+
         file_name = os.path.basename(self.file_path)
 
         try:
