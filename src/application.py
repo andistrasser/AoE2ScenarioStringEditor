@@ -27,6 +27,10 @@ LABEL_FILE = "File"
 LABEL_HELP = "Help"
 LABEL_ABOUT = "About"
 LABEL_SCENARIO_NAME = "Scenario name:"
+STATUS_NO_SCENARIO_LOADED = "no scenario file loaded at the moment"
+STATUS_LOADING = "loading "
+STATUS_LOADING_SUCCESSFUL = " loaded successfully"
+STATUS_LOADING_FAILED = " could not be loaded"
 COMBOBOX_MESSAGES_CONTENT = ["Scenario Instructions", "Hints", "Victory", "Loss", "History", "Scout"]
 FILETYPES = [('AoE2DE scenario file', '*.aoe2scenario')]
 
@@ -40,7 +44,9 @@ class App(tk.Tk):
 
     # initialize variables
     def _init(self):
-        self.file_name = ""
+        self.file = ""
+        self.status = tk.StringVar()
+        self.status.set(STATUS_NO_SCENARIO_LOADED)
 
     # creates a window and places widgets on it
     def _build_ui(self):
@@ -153,10 +159,28 @@ class App(tk.Tk):
         self.button_apply = ttk.Button(self.tab_raw, text=LABEL_APPLY)
         self.button_apply.grid(row=1, column=0, padx=10, pady=(0, 10), sticky="e")
 
+        # status bar
+        separator = ttk.Separator(self, orient='horizontal')
+        separator.grid(row=1, column=0, sticky="ew")
+        self.label_status_bar = ttk.Label(self, textvariable=self.status)
+        self.label_status_bar.grid(row=2, column=0, padx=2, pady=2, sticky="w")
+
+        # make tabs expand with the window
         self.columnconfigure(0, weight=1)
         self.rowconfigure(0, weight=1)
 
+    def _set_status(self, text):
+        self.status.set(text)
+        self.update()
+
     def _open_file(self):
-        self.file_name = askopenfilename(filetypes=FILETYPES)
-        self.scenario_handler = ScenarioHandler(self.file_name)
-        self.scenario = self.scenario_handler.load_scenario()
+        self.file_path = askopenfilename(filetypes=FILETYPES)
+        self.scenario_handler = ScenarioHandler(self.file_path)
+        file_name = os.path.basename(self.file_path)
+
+        try:
+            self._set_status(STATUS_LOADING + file_name)
+            self.scenario = self.scenario_handler.load_scenario()
+            self._set_status(file_name + STATUS_LOADING_SUCCESSFUL)
+        except:
+            self._set_status(file_name + STATUS_LOADING_FAILED)
