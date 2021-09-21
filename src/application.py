@@ -23,6 +23,7 @@ LABEL_EXIT = "Exit"
 LABEL_FILE = "File"
 LABEL_HELP = "Help"
 LABEL_ABOUT = "About"
+LABEL_SCENARIO_NAME = "Scenario name:"
 COMBOBOX_MESSAGES_CONTENT = ["Scenario Instructions", "Hints", "Victory", "Loss", "History", "Scout"]
 
 
@@ -88,6 +89,13 @@ class App(tk.Tk):
         self.tab_view.add(self.tab_triggers, text=LABEL_TAB_TRIGGERS)
         self.tab_view.add(self.tab_raw, text=LABEL_TAB_RAW)
         self.tab_view.grid(row=0, column=0, padx=10, pady=10, sticky="ewns")
+
+        # general tab content
+        self.label_scenario_name = ttk.Label(self.tab_general, text=LABEL_SCENARIO_NAME)
+        self.label_scenario_name.grid(row=0, column=0, padx=10, pady=(10, 0), sticky="e")
+
+        self.entry_scenario_name = ttk.Entry(self.tab_general, width=35)
+        self.entry_scenario_name.grid(row=0, column=1, padx=0, pady=(10, 0), sticky="ew")
 
         # player tab content
         self.player_labels = []
