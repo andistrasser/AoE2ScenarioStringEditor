@@ -3,6 +3,9 @@ import sys
 import tkinter as tk
 from tkinter import scrolledtext
 from tkinter import ttk
+from tkinter.filedialog import askopenfilename
+
+from scenario_handler import ScenarioHandler
 
 # constants
 APP_TITLE = "AoE2ScenarioStringEditor"
@@ -25,6 +28,7 @@ LABEL_HELP = "Help"
 LABEL_ABOUT = "About"
 LABEL_SCENARIO_NAME = "Scenario name:"
 COMBOBOX_MESSAGES_CONTENT = ["Scenario Instructions", "Hints", "Victory", "Loss", "History", "Scout"]
+FILETYPES = [('AoE2DE scenario file', '*.aoe2scenario')]
 
 
 # application class
@@ -64,7 +68,7 @@ class App(tk.Tk):
 
         # file menu
         menu_file = tk.Menu(self.menu_bar, tearoff=0)
-        menu_file.add_command(label=LABEL_OPEN, accelerator="Ctrl+O")
+        menu_file.add_command(label=LABEL_OPEN, accelerator="Ctrl+O", command=self._open_file)
         menu_file.add_command(label=LABEL_RELOAD, accelerator="Ctrl+R")
         menu_file.add_command(label=LABEL_SAVE, accelerator="Ctrl+S")
         menu_file.add_command(label=LABEL_SAVE_AS, accelerator="Shift+Ctrl+S")
@@ -151,3 +155,8 @@ class App(tk.Tk):
 
         self.columnconfigure(0, weight=1)
         self.rowconfigure(0, weight=1)
+
+    def _open_file(self):
+        self.file_name = askopenfilename(filetypes=FILETYPES)
+        self.scenario_handler = ScenarioHandler(self.file_name)
+        self.scenario = self.scenario_handler.load_scenario()
