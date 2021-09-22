@@ -152,8 +152,7 @@ class App(tk.Tk):
         # triggers tab content
         self.listbox_triggers = tk.Listbox(self.tab_triggers, width=60)
         self.listbox_triggers.grid(row=0, column=0, padx=(10, 0), pady=10, sticky="ewns")
-        # self.listbox_triggers.insert(1, "[D] Refugees Spawn (one time) - E#0: Display Instructions")
-        # self.listbox_triggers.insert(2, "[D] First Group in East - E#0: Display Instructions")
+        self.listbox_triggers.bind("<<ListboxSelect>>", self._trigger_selected)
 
         self.textfield_triggers = scrolledtext.ScrolledText(self.tab_triggers)
         self.textfield_triggers.grid(row=0, column=1, padx=10, pady=10, sticky="ewns")
@@ -261,9 +260,9 @@ class App(tk.Tk):
 
         for trigger_item in self.content_triggers:
             if trigger_item.effect_index != NO_EFFECT:
-                self.listbox_triggers.insert(1, trigger_item.name + " - E#" + str(trigger_item.effect_index))
+                self.listbox_triggers.insert("end", trigger_item.name + " - E#" + str(trigger_item.effect_index))
             else:
-                self.listbox_triggers.insert(1, trigger_item.name)
+                self.listbox_triggers.insert("end", trigger_item.name)
 
     def _reload_content(self):
         if self.scenario_loaded:
@@ -273,6 +272,13 @@ class App(tk.Tk):
     def _message_selected(self, event):
         if self.scenario_loaded:
             selected_index = self.combobox_message.current()
-    
+
             self.textfield_message.delete(1.0, "end")
             self.textfield_message.insert(1.0, self.content_messages[selected_index])
+
+    def _trigger_selected(self, event):
+        if self.scenario_loaded and len(self.content_triggers) > 0 and len(self.listbox_triggers.curselection()) > 0:
+            selected_index = self.listbox_triggers.curselection()[0]
+
+            self.textfield_triggers.delete(1.0, "end")
+            self.textfield_triggers.insert(1.0, self.content_triggers[selected_index].text)
