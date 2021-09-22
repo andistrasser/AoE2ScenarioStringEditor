@@ -141,6 +141,7 @@ class App(tk.Tk):
         self.combobox_message = ttk.Combobox(self.tab_messages, values=COMBOBOX_MESSAGES_CONTENT)
         self.combobox_message.grid(row=0, column=0, padx=(10, 0), pady=10, sticky="nw")
         self.combobox_message.current(0)
+        self.combobox_message.bind("<<ComboboxSelected>>", self._message_selected)
 
         self.textfield_message = scrolledtext.ScrolledText(self.tab_messages)
         self.textfield_message.grid(row=0, column=1, padx=10, pady=10, sticky="ewns")
@@ -268,3 +269,10 @@ class App(tk.Tk):
         if self.scenario_loaded:
             self._load_content_from_scenario()
             self._load_content_into_ui()
+
+    def _message_selected(self, event):
+        if self.scenario_loaded:
+            selected_index = self.combobox_message.current()
+    
+            self.textfield_message.delete(1.0, "end")
+            self.textfield_message.insert(1.0, self.content_messages[selected_index])
