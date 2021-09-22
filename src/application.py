@@ -5,9 +5,14 @@ from tkinter import scrolledtext
 from tkinter import ttk
 from tkinter.filedialog import askopenfilename
 
+import trigger_item as ti
 from scenario_handler import ScenarioHandler
+from trigger_item import TriggerItem
 
 # constants
+EFFECT_56 = 56
+EFFECT_91 = 91
+NO_EFFECT = -1
 APP_TITLE = "AoE2ScenarioStringEditor"
 THEME_DEFAULT = "clam"
 THEME_WINDOWS = "vista"
@@ -32,7 +37,7 @@ STATUS_LOADING = "loading "
 STATUS_LOADING_SUCCESSFUL = " loaded successfully"
 STATUS_LOADING_FAILED = " could not be loaded"
 COMBOBOX_MESSAGES_CONTENT = ["Scenario Instructions", "Hints", "Victory", "Loss", "History", "Scout"]
-FILETYPES = [('AoE2DE scenario file', '*.aoe2scenario')]
+FILETYPES = [("AoE2DE scenario file", "*.aoe2scenario")]
 
 
 # application class
@@ -47,6 +52,10 @@ class App(tk.Tk):
         self.file = ""
         self.status = tk.StringVar()
         self.status.set(STATUS_NO_SCENARIO_LOADED)
+        self.player_count = 0
+        self.content_players = []
+        self.content_messages = []
+        self.content_triggers = []
 
     # creates a window and places widgets on it
     def _build_ui(self):
@@ -160,7 +169,7 @@ class App(tk.Tk):
         self.button_apply.grid(row=1, column=0, padx=10, pady=(0, 10), sticky="e")
 
         # status bar
-        separator = ttk.Separator(self, orient='horizontal')
+        separator = ttk.Separator(self, orient="horizontal")
         separator.grid(row=1, column=0, sticky="ew")
         self.label_status_bar = ttk.Label(self, textvariable=self.status)
         self.label_status_bar.grid(row=2, column=0, padx=2, pady=2, sticky="w")
@@ -185,6 +194,67 @@ class App(tk.Tk):
         try:
             self._set_status(STATUS_LOADING + file_name)
             self.scenario = self.scenario_handler.load_scenario()
+            self._load_content_from_scenario()
+            self._load_content_into_ui()
             self._set_status(file_name + STATUS_LOADING_SUCCESSFUL)
         except:
             self._set_status(file_name + STATUS_LOADING_FAILED)
+
+    def _load_content_from_scenario(self):
+        # file header section
+        file_header_section = self.scenario.sections["FileHeader"]
+
+        self.player_count = file_header_section.player_count
+
+        # data header section
+        data_header_section = self.scenario.sections["DataHeader"]
+
+        for index in range(0, 8):
+            player_name = str(data_header_section.player_names[index])
+
+            self.content_players.append(player_name.replace("\x00", ""))
+
+        # messages section
+        messages_section = self.scenario.sections["Messages"]
+
+        self.content_messages.append(messages_section.ascii_instructions)
+        self.content_messages.append(messages_section.ascii_hints)
+        self.content_messages.append(messages_section.ascii_victory)
+        self.content_messages.append(messages_section.ascii_loss)
+        self.content_messages.append(messages_section.ascii_history)
+        self.content_messages.append(messages_section.ascii_scouts)
+
+        # triggers
+        trigger_manager = self.scenario.trigger_manager
+
+        for trigger in trigger_manager.triggers:
+            if trigger.display_as_objective:
+                if trigger.description != "":
+                    trigger_text_long = TriggerItem(ti.TYPE_OBJECTIVE_LONG, trigger.name, trigger.description,
+                                                    trigger_manager.triggers.index(trigger), NO_EFFECT)
+                    self.content_triggers.append(trigger_text_long)
+
+                if trigger.short_description != "":
+                    trigger_text_short = TriggerItem(ti.TYPE_OBJECTIVE_SHORT, trigger.name, trigger.short_description,
+                                                     trigger_manager.triggers.index(trigger), NO_EFFECT)
+                    self.content_triggers.append(trigger_text_short)
+
+            else:
+                for effect in trigger.effects:
+                    if effect.effect_type != EFFECT_56 and effect.effect_type != EFFECT_91 and effect.message != "":
+                        effect_message = TriggerItem(ti.TYPE_EFFECT_MESSAGE, trigger.name, effect.message,
+                                                     trigger_manager.triggers.index(trigger),
+                                                     trigger.effects.index(effect))
+                        self.content_triggers.append(effect_message)
+
+    def _load_content_into_ui(self):
+        for player_index in range(0, 8):
+            self.player_entries[player_index].delete(0, "end")
+            self.player_entries[player_index].insert(0, self.content_players[player_index])
+
+        self.combobox_message.current(0)
+        self.textfield_message.delete(1.0, "end")
+        self.textfield_message.insert(1.0, self.content_messages[0])
+
+        for trigger_item in self.content_triggers:
+            self.listbox_triggers.insert(1, trigger_item.name)
