@@ -50,6 +50,7 @@ class App(tk.Tk):
     # initialize variables
     def _init(self):
         self.file = ""
+        self.scenario_loaded = False
         self.status = tk.StringVar()
         self.status.set(STATUS_NO_SCENARIO_LOADED)
         self.player_count = 0
@@ -84,18 +85,18 @@ class App(tk.Tk):
         # file menu
         menu_file = tk.Menu(self.menu_bar, tearoff=0)
         menu_file.add_command(label=LABEL_OPEN, accelerator="Ctrl+O", command=self._open_file)
-        menu_file.add_command(label=LABEL_RELOAD, accelerator="Ctrl+R")
+        menu_file.add_command(label=LABEL_RELOAD, accelerator="Ctrl+R", command=self._reload_content)
         menu_file.add_command(label=LABEL_SAVE, accelerator="Ctrl+S")
         menu_file.add_command(label=LABEL_SAVE_AS, accelerator="Shift+Ctrl+S")
         menu_file.add_separator()
         menu_file.add_command(label=LABEL_EXIT, command=self.quit, accelerator="Ctrl+Q")
-        self.menu_bar.add_cascade(label=LABEL_FILE, underline=0, menu=menu_file)
+        self.menu_bar.add_cascade(label=LABEL_FILE, menu=menu_file)
 
         # help menu
         menu_help = tk.Menu(self.menu_bar, tearoff=0)
         menu_help.add_command(label=LABEL_HELP, accelerator="F1")
         menu_help.add_command(label=LABEL_ABOUT)
-        self.menu_bar.add_cascade(label=LABEL_HELP, underline=0, menu=menu_help)
+        self.menu_bar.add_cascade(label=LABEL_HELP, menu=menu_help)
 
         self.config(menu=self.menu_bar)
 
@@ -196,6 +197,7 @@ class App(tk.Tk):
             self.scenario = self.scenario_handler.load_scenario()
             self._load_content_from_scenario()
             self._load_content_into_ui()
+            self.scenario_loaded = True
             self._set_status(file_name + STATUS_LOADING_SUCCESSFUL)
         except:
             self._set_status(file_name + STATUS_LOADING_FAILED)
@@ -261,3 +263,8 @@ class App(tk.Tk):
                 self.listbox_triggers.insert(1, trigger_item.name + " - E#" + str(trigger_item.effect_index))
             else:
                 self.listbox_triggers.insert(1, trigger_item.name)
+
+    def _reload_content(self):
+        if self.scenario_loaded:
+            self._load_content_from_scenario()
+            self._load_content_into_ui()
