@@ -257,4 +257,7 @@ class App(tk.Tk):
         self.textfield_message.insert(1.0, self.content_messages[0])
 
         for trigger_item in self.content_triggers:
-            self.listbox_triggers.insert(1, trigger_item.name)
+            if trigger_item.effect_index != NO_EFFECT:
+                self.listbox_triggers.insert(1, trigger_item.name + " - E#" + str(trigger_item.effect_index))
+            else:
+                self.listbox_triggers.insert(1, trigger_item.name)
