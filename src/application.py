@@ -53,7 +53,8 @@ class App(tk.Tk):
         self.scenario_loaded = False
         self.status = tk.StringVar()
         self.status.set(STATUS_NO_SCENARIO_LOADED)
-        self.player_count = 0
+        self.last_message_index = 0
+        self.last_trigger_index = 0
         self.content_players = []
         self.content_messages = []
         self.content_triggers = []
@@ -195,6 +196,9 @@ class App(tk.Tk):
         try:
             self._set_status(STATUS_LOADING + file_name)
             self.scenario = self.scenario_handler.load_scenario()
+            self.content_players.clear()
+            self.content_messages.clear()
+            self.content_triggers.clear()
             self._load_content_from_scenario()
             self._load_content_into_ui()
             self.scenario_loaded = True
@@ -205,8 +209,6 @@ class App(tk.Tk):
     def _load_content_from_scenario(self):
         # file header section
         file_header_section = self.scenario.sections["FileHeader"]
-
-        self.player_count = file_header_section.player_count
 
         # data header section
         data_header_section = self.scenario.sections["DataHeader"]
@@ -254,9 +256,8 @@ class App(tk.Tk):
             self.player_entries[player_index].delete(0, "end")
             self.player_entries[player_index].insert(0, self.content_players[player_index])
 
-        self.combobox_message.current(0)
         self.textfield_message.delete(1.0, "end")
-        self.textfield_message.insert(1.0, self.content_messages[0])
+        self.textfield_message.insert(1.0, self.content_messages[self.last_message_index])
 
         for trigger_item in self.content_triggers:
             if trigger_item.effect_index != NO_EFFECT:
@@ -266,15 +267,21 @@ class App(tk.Tk):
 
     def _reload_content(self):
         if self.scenario_loaded:
+            self.content_players.clear()
+            self.content_messages.clear()
+            self.content_triggers.clear()
             self._load_content_from_scenario()
             self._load_content_into_ui()
 
     def _message_selected(self, event):
         if self.scenario_loaded:
-            selected_index = self.combobox_message.current()
+            self.content_messages[self.last_message_index] = self.textfield_message.get(1.0, "end")
+            self.last_message_index = self.combobox_message.current()
 
             self.textfield_message.delete(1.0, "end")
-            self.textfield_message.insert(1.0, self.content_messages[selected_index])
+            self.textfield_message.insert(1.0, self.content_messages[self.last_message_index])
+        else:
+            self.last_message_index = self.combobox_message.current()
 
     def _trigger_selected(self, event):
         if self.scenario_loaded and len(self.content_triggers) > 0 and len(self.listbox_triggers.curselection()) > 0:
