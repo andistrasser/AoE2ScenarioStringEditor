@@ -1,186 +1,44 @@
 import os
-import sys
-import tkinter as tk
-from tkinter import scrolledtext
-from tkinter import ttk
 from tkinter.filedialog import askopenfilename
 
 import trigger_item as ti
 from content import Content
 from scenario_handler import ScenarioHandler
 from trigger_item import TriggerItem
+from user_interface import UserInterface
 
 # constants
 EFFECT_56 = 56
 EFFECT_91 = 91
-APP_TITLE = "AoE2ScenarioStringEditor"
-THEME_DEFAULT = "clam"
-THEME_WINDOWS = "vista"
-LABEL_TAB_GENERAL = "General"
-LABEL_TAB_PLAYERS = "Players"
-LABEL_TAB_MESSAGES = "Messages"
-LABEL_TAB_TRIGGERS = "Triggers"
-LABEL_TAB_RAW = "Raw"
-LABEL_PLAYER = "Player "
-LABEL_APPLY = "Apply"
-LABEL_OPEN = "Open"
-LABEL_RELOAD = "Reload"
-LABEL_SAVE = "Save"
-LABEL_SAVE_AS = "Save as"
-LABEL_EXIT = "Exit"
-LABEL_FILE = "File"
-LABEL_HELP = "Help"
-LABEL_ABOUT = "About"
-LABEL_SCENARIO_NAME = "Scenario name:"
 STATUS_NO_SCENARIO_LOADED = "no scenario file loaded at the moment"
 STATUS_LOADING = "loading "
 STATUS_LOADING_SUCCESSFUL = " loaded successfully"
 STATUS_LOADING_FAILED = " could not be loaded"
-COMBOBOX_MESSAGES_CONTENT = ["Scenario Instructions", "Hints", "Victory", "Loss", "History", "Scout"]
 FILETYPES = [("AoE2DE scenario file", "*.aoe2scenario")]
 
 
 # application class
-class App(tk.Tk):
+class App:
     def __init__(self):
-        super().__init__()
         self._init()
-        self._build_ui()
+        self._bind_functions()
+        self.ui.mainloop()
 
-    # initialize variables
+    # build user interface, initialize variables
     def _init(self):
         self.file = ""
         self.scenario_loaded = False
-        self.status = tk.StringVar()
-        self.status.set(STATUS_NO_SCENARIO_LOADED)
+        self.ui = UserInterface()
+        self.ui.status.set(STATUS_NO_SCENARIO_LOADED)
         self.last_message_index = 0
         self.last_trigger_index = 0
         self.content = Content()
 
-    # creates a window and places widgets on it
-    def _build_ui(self):
-        self.geometry("720x470")
-        self.title(APP_TITLE)
-        self.style = ttk.Style(self)
-
-        # set the app icon add change theme if executed on a windows systems
-        if THEME_WINDOWS in self.style.theme_names():
-            self.style.theme_use(THEME_WINDOWS)
-
-            icon = "icon.ico"
-
-            if not hasattr(sys, "frozen"):
-                icon = os.path.join(os.path.dirname(__file__), icon)
-            else:
-                icon = os.path.join(sys.prefix, icon)
-
-            self.iconbitmap(default=icon)
-        else:
-            self.style.theme_use(THEME_DEFAULT)
-
-        # menu bar
-        self.menu_bar = tk.Menu(self)
-
-        # file menu
-        menu_file = tk.Menu(self.menu_bar, tearoff=0)
-        menu_file.add_command(label=LABEL_OPEN, accelerator="Ctrl+O", command=self._open_file)
-        menu_file.add_command(label=LABEL_RELOAD, accelerator="Ctrl+R", command=self._reload_content)
-        menu_file.add_command(label=LABEL_SAVE, accelerator="Ctrl+S")
-        menu_file.add_command(label=LABEL_SAVE_AS, accelerator="Shift+Ctrl+S")
-        menu_file.add_separator()
-        menu_file.add_command(label=LABEL_EXIT, command=self.quit, accelerator="Ctrl+Q")
-        self.menu_bar.add_cascade(label=LABEL_FILE, menu=menu_file)
-
-        # help menu
-        menu_help = tk.Menu(self.menu_bar, tearoff=0)
-        menu_help.add_command(label=LABEL_HELP, accelerator="F1")
-        menu_help.add_command(label=LABEL_ABOUT)
-        self.menu_bar.add_cascade(label=LABEL_HELP, menu=menu_help)
-
-        self.config(menu=self.menu_bar)
-
-        # tab view
-        self.tab_view = ttk.Notebook(self)
-
-        self.tab_general = ttk.Frame(self.tab_view)
-        self.tab_players = ttk.Frame(self.tab_view)
-        self.tab_messages = ttk.Frame(self.tab_view)
-        self.tab_triggers = ttk.Frame(self.tab_view)
-        self.tab_raw = ttk.Frame(self.tab_view)
-        self.tab_view.add(self.tab_general, text=LABEL_TAB_GENERAL)
-        self.tab_view.add(self.tab_players, text=LABEL_TAB_PLAYERS)
-        self.tab_view.add(self.tab_messages, text=LABEL_TAB_MESSAGES)
-        self.tab_view.add(self.tab_triggers, text=LABEL_TAB_TRIGGERS)
-        self.tab_view.add(self.tab_raw, text=LABEL_TAB_RAW)
-        self.tab_view.grid(row=0, column=0, padx=10, pady=10, sticky="ewns")
-
-        # general tab content
-        self.label_scenario_name = ttk.Label(self.tab_general, text=LABEL_SCENARIO_NAME)
-        self.label_scenario_name.grid(row=0, column=0, padx=10, pady=(10, 0), sticky="e")
-
-        self.entry_scenario_name = ttk.Entry(self.tab_general, width=35)
-        self.entry_scenario_name.grid(row=0, column=1, padx=0, pady=(10, 0), sticky="ew")
-
-        # player tab content
-        self.player_labels = []
-        self.player_entries = []
-
-        for player_index in range(1, 9):
-            label_player = ttk.Label(self.tab_players, text=(LABEL_PLAYER + str(player_index) + ":"))
-            label_player.grid(row=(player_index - 1), column=0, padx=10, pady=(10, 0), sticky="e")
-
-            self.player_labels.append(label_player)
-
-            entry_player = ttk.Entry(self.tab_players, width=35)
-            entry_player.grid(row=(player_index - 1), column=1, padx=0, pady=(10, 0), sticky="ew")
-
-            self.player_entries.append(entry_player)
-
-        # messages tab content
-        self.combobox_message = ttk.Combobox(self.tab_messages, values=COMBOBOX_MESSAGES_CONTENT)
-        self.combobox_message.grid(row=0, column=0, padx=(10, 0), pady=10, sticky="nw")
-        self.combobox_message.current(0)
-        self.combobox_message.bind("<<ComboboxSelected>>", self._message_selected)
-
-        self.textfield_message = scrolledtext.ScrolledText(self.tab_messages)
-        self.textfield_message.grid(row=0, column=1, padx=10, pady=10, sticky="ewns")
-
-        self.tab_messages.columnconfigure(1, weight=1)
-        self.tab_messages.rowconfigure(0, weight=1)
-
-        # triggers tab content
-        self.listbox_triggers = tk.Listbox(self.tab_triggers, width=60)
-        self.listbox_triggers.grid(row=0, column=0, padx=(10, 0), pady=10, sticky="ewns")
-        self.listbox_triggers.bind("<<ListboxSelect>>", self._trigger_selected)
-
-        self.textfield_triggers = scrolledtext.ScrolledText(self.tab_triggers)
-        self.textfield_triggers.grid(row=0, column=1, padx=10, pady=10, sticky="ewns")
-        self.tab_triggers.columnconfigure(0, weight=1)
-        self.tab_triggers.columnconfigure(1, weight=1)
-        self.tab_triggers.rowconfigure(0, weight=1)
-
-        # raw tab content
-        self.textfield_raw = scrolledtext.ScrolledText(self.tab_raw)
-        self.textfield_raw.grid(row=0, column=0, padx=10, pady=10, sticky="ewns")
-        self.tab_raw.columnconfigure(0, weight=1)
-        self.tab_raw.rowconfigure(0, weight=1)
-
-        self.button_apply = ttk.Button(self.tab_raw, text=LABEL_APPLY, command=self.button_apply_clicked)
-        self.button_apply.grid(row=1, column=0, padx=10, pady=(0, 10), sticky="e")
-
-        # status bar
-        separator = ttk.Separator(self, orient="horizontal")
-        separator.grid(row=1, column=0, sticky="ew")
-        self.label_status_bar = ttk.Label(self, textvariable=self.status)
-        self.label_status_bar.grid(row=2, column=0, padx=2, pady=2, sticky="w")
-
-        # make tabs expand with the window
-        self.columnconfigure(0, weight=1)
-        self.rowconfigure(0, weight=1)
-
-    def _set_status(self, text):
-        self.status.set(text)
-        self.update()
+    def _bind_functions(self):
+        self.ui.menu_file.entryconfig(0, command=self._open_file)
+        self.ui.menu_file.entryconfig(1, command=self._reload_content)
+        self.ui.combobox_message.bind("<<ComboboxSelected>>", self._message_selected)
+        self.ui.listbox_triggers.bind("<<ListboxSelect>>", self._trigger_selected)
 
     def _open_file(self):
         self.file_path = askopenfilename(filetypes=FILETYPES)
@@ -193,17 +51,17 @@ class App(tk.Tk):
         file_name = os.path.basename(self.file_path)
 
         try:
-            self._set_status(STATUS_LOADING + file_name)
+            self.ui.set_status(STATUS_LOADING + file_name)
             self.scenario = self.scenario_handler.load_scenario()
             self.content.clear()
-            self._load_content_from_scenario()
-            self._load_content_into_ui()
+            self._load_content()
+            self._display_content()
             self.scenario_loaded = True
-            self._set_status(file_name + STATUS_LOADING_SUCCESSFUL)
+            self.ui.set_status(file_name + STATUS_LOADING_SUCCESSFUL)
         except:
-            self._set_status(file_name + STATUS_LOADING_FAILED)
+            self.ui.set_status(file_name + STATUS_LOADING_FAILED)
 
-    def _load_content_from_scenario(self):
+    def _load_content(self):
         # data header section
         data_header_section = self.scenario.sections["DataHeader"]
 
@@ -250,57 +108,58 @@ class App(tk.Tk):
         # raw
         self.content.create_raw_content()
 
-    def _load_content_into_ui(self):
-        self.entry_scenario_name.delete(0, "end")
-        self.entry_scenario_name.insert(0, self.content.internal_file_name)
+    def _display_content(self):
+        self.ui.entry_scenario_name.delete(0, "end")
+        self.ui.entry_scenario_name.insert(0, self.content.internal_file_name)
 
         for player_index in range(0, 8):
-            self.player_entries[player_index].delete(0, "end")
-            self.player_entries[player_index].insert(0, self.content.get_section("Players")[player_index])
+            self.ui.player_entries[player_index].delete(0, "end")
+            self.ui.player_entries[player_index].insert(0, self.content.get_section("Players")[player_index])
 
-        self.textfield_message.delete(1.0, "end")
-        self.textfield_message.insert(1.0, self.content.get_section("Messages")[self.last_message_index])
+        self.ui.textfield_message.delete(1.0, "end")
+        self.ui.textfield_message.insert(1.0, self.content.get_section("Messages")[self.last_message_index])
 
-        self.listbox_triggers.delete(0, "end")
+        self.ui.listbox_triggers.delete(0, "end")
 
         for trigger_item in self.content.get_section("Triggers"):
             if trigger_item.effect_index != ti.NO_EFFECT:
-                self.listbox_triggers.insert("end", trigger_item.name + " - E#" + str(trigger_item.effect_index))
+                self.ui.listbox_triggers.insert("end", trigger_item.name + " - E#" + str(trigger_item.effect_index))
             else:
-                self.listbox_triggers.insert("end", trigger_item.name)
+                self.ui.listbox_triggers.insert("end", trigger_item.name)
 
-        self.textfield_triggers.delete(1.0, "end")
-        self.textfield_triggers.insert(1.0, self.content.get_section("Triggers")[self.last_trigger_index].text)
+        self.ui.textfield_triggers.delete(1.0, "end")
+        self.ui.textfield_triggers.insert(1.0, self.content.get_section("Triggers")[self.last_trigger_index].text)
 
-        self.textfield_raw.delete(1.0, "end")
-        self.textfield_raw.insert("end", self.content.get_section("Raw"))
+        self.ui.textfield_raw.delete(1.0, "end")
+        self.ui.textfield_raw.insert("end", self.content.get_section("Raw"))
 
     def _reload_content(self):
         if self.scenario_loaded:
             self.content.clear()
-            self._load_content_from_scenario()
-            self._load_content_into_ui()
+            self._load_content()
+            self._display_content()
 
     def _message_selected(self, event):
         if self.scenario_loaded:
-            self.content.get_section("Messages")[self.last_message_index] = self.textfield_message.get(1.0, "end")
-            self.last_message_index = self.combobox_message.current()
+            self.content.get_section("Messages")[self.last_message_index] = self.ui.textfield_message.get(1.0, "end")
+            self.last_message_index = self.ui.combobox_message.current()
 
-            self.textfield_message.delete(1.0, "end")
-            self.textfield_message.insert(1.0, self.content.get_section("Messages")[self.last_message_index])
+            self.ui.textfield_message.delete(1.0, "end")
+            self.ui.textfield_message.insert(1.0, self.content.get_section("Messages")[self.last_message_index])
         else:
-            self.last_message_index = self.combobox_message.current()
+            self.last_message_index = self.ui.combobox_message.current()
 
     def _trigger_selected(self, event):
-        curselection = self.listbox_triggers.curselection()
+        curselection = self.ui.listbox_triggers.curselection()
 
         if self.scenario_loaded and len(self.content.get_section("Triggers")) > 0 and len(curselection) > 0:
-            self.content.get_section("Triggers")[self.last_trigger_index].text = self.textfield_triggers.get(1.0, "end")
-            self.last_trigger_index = self.listbox_triggers.curselection()[0]
+            self.content.get_section("Triggers")[self.last_trigger_index].text = self.ui.textfield_triggers.get(1.0,
+                                                                                                                "end")
+            self.last_trigger_index = self.ui.listbox_triggers.curselection()[0]
 
-            self.textfield_triggers.delete(1.0, "end")
-            self.textfield_triggers.insert(1.0, self.content.get_section("Triggers")[self.last_trigger_index].text)
+            self.ui.textfield_triggers.delete(1.0, "end")
+            self.ui.textfield_triggers.insert(1.0, self.content.get_section("Triggers")[self.last_trigger_index].text)
 
-    def button_apply_clicked(self):
-        self.content.apply_raw_content(self.textfield_raw.get(1.0, "end"))
-        self._load_content_into_ui()
+    def _button_apply_clicked(self):
+        self.content.apply_raw_content(self.ui.textfield_raw.get(1.0, "end"))
+        self._display_content()
