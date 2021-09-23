@@ -146,8 +146,8 @@ class UserInterface(tk.Tk):
         tab_raw.columnconfigure(0, weight=1)
         tab_raw.rowconfigure(0, weight=1)
 
-        button_apply = ttk.Button(tab_raw, text=LABEL_APPLY)
-        button_apply.grid(row=1, column=0, padx=10, pady=(0, 10), sticky="e")
+        self.button_apply = ttk.Button(tab_raw, text=LABEL_APPLY)
+        self.button_apply.grid(row=1, column=0, padx=10, pady=(0, 10), sticky="e")
 
         # separator
         separator = ttk.Separator(self, orient="horizontal")
@@ -161,6 +161,23 @@ class UserInterface(tk.Tk):
         # make tabs expand with the window
         self.columnconfigure(0, weight=1)
         self.rowconfigure(0, weight=1)
+
+    def _lock_ui(self, lock):
+        state = "normal"
+
+        if lock:
+            state = "disabled"
+
+        self.ui.menu_file.entryconfig(MENU_RELOAD, state=state)
+        self.ui.menu_file.entryconfig(MENU_SAVE, state=state)
+        self.ui.menu_file.entryconfig(MENU_SAVE_AS, state=state)
+        self.entry_scenario_name.config(state=state)
+        self.combobox_message.config(state=state)
+        self.textfield_message.config(state=state)
+        self.listbox_triggers.config(state=state)
+        self.textfield_triggers.config(state=state)
+        self.textfield_raw.config(state=state)
+        self.button_apply.config(state=state)
 
     def set_status(self, text):
         self.status.set(text)
