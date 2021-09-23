@@ -23,7 +23,7 @@ class App:
     def __init__(self):
         self._init()
         self._bind_functions()
-        self.ui.lock_ui(True)
+        self.ui.lock(True)
         self.ui.mainloop()
 
     # build user interface, initialize variables
@@ -57,9 +57,9 @@ class App:
             self.scenario = self.scenario_handler.load_scenario()
             self.content.clear()
             self._load_content()
+            self.ui.lock(False)
             self._display_content()
             self.scenario_loaded = True
-            self.ui.lock_ui(False)
             self.ui.set_status(file_name + STATUS_LOADING_SUCCESSFUL)
         except:
             self.ui.set_status(file_name + STATUS_LOADING_FAILED)
@@ -156,8 +156,7 @@ class App:
         curselection = self.ui.listbox_triggers.curselection()
 
         if self.scenario_loaded and len(self.content.get("Triggers")) > 0 and len(curselection) > 0:
-            self.content.get("Triggers")[self.last_trigger_index].text = self.ui.textfield_triggers.get(1.0,
-                                                                                                        "end")
+            self.content.get("Triggers")[self.last_trigger_index].text = self.ui.textfield_triggers.get(1.0, "end")
             self.last_trigger_index = self.ui.listbox_triggers.curselection()[0]
 
             self.ui.textfield_triggers.delete(1.0, "end")

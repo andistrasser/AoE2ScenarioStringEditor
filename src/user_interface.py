@@ -162,7 +162,7 @@ class UserInterface(tk.Tk):
         self.columnconfigure(0, weight=1)
         self.rowconfigure(0, weight=1)
 
-    def lock_ui(self, lock):
+    def lock(self, lock):
         state = "normal"
 
         if lock:
