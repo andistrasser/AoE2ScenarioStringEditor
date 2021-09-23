@@ -6,6 +6,7 @@ from tkinter import ttk
 from tkinter.filedialog import askopenfilename
 
 import trigger_item as ti
+from content import Content
 from scenario_handler import ScenarioHandler
 from trigger_item import TriggerItem
 
@@ -55,10 +56,7 @@ class App(tk.Tk):
         self.status.set(STATUS_NO_SCENARIO_LOADED)
         self.last_message_index = 0
         self.last_trigger_index = 0
-        self.internal_file_name = ""
-        self.content_players = []
-        self.content_messages = []
-        self.content_triggers = []
+        self.content = Content()
 
     # creates a window and places widgets on it
     def _build_ui(self):
@@ -168,7 +166,7 @@ class App(tk.Tk):
         self.tab_raw.columnconfigure(0, weight=1)
         self.tab_raw.rowconfigure(0, weight=1)
 
-        self.button_apply = ttk.Button(self.tab_raw, text=LABEL_APPLY)
+        self.button_apply = ttk.Button(self.tab_raw, text=LABEL_APPLY, command=self.button_apply_clicked)
         self.button_apply.grid(row=1, column=0, padx=10, pady=(0, 10), sticky="e")
 
         # status bar
@@ -187,19 +185,18 @@ class App(tk.Tk):
 
     def _open_file(self):
         self.file_path = askopenfilename(filetypes=FILETYPES)
-        self.scenario_handler = ScenarioHandler(self.file_path)
 
         if len(self.file_path) == 0:
             return
+
+        self.scenario_handler = ScenarioHandler(self.file_path)
 
         file_name = os.path.basename(self.file_path)
 
         try:
             self._set_status(STATUS_LOADING + file_name)
             self.scenario = self.scenario_handler.load_scenario()
-            self.content_players.clear()
-            self.content_messages.clear()
-            self.content_triggers.clear()
+            self.content.clear()
             self._load_content_from_scenario()
             self._load_content_into_ui()
             self.scenario_loaded = True
@@ -211,22 +208,22 @@ class App(tk.Tk):
         # data header section
         data_header_section = self.scenario.sections["DataHeader"]
 
-        self.internal_file_name = data_header_section.filename
+        self.content.internal_file_name = data_header_section.filename
 
         for index in range(0, 8):
             player_name = str(data_header_section.player_names[index])
 
-            self.content_players.append(player_name.replace("\x00", ""))
+            self.content.add_item_to_section("Players", player_name.replace("\x00", ""))
 
         # messages section
         messages_section = self.scenario.sections["Messages"]
 
-        self.content_messages.append(messages_section.ascii_instructions)
-        self.content_messages.append(messages_section.ascii_hints)
-        self.content_messages.append(messages_section.ascii_victory)
-        self.content_messages.append(messages_section.ascii_loss)
-        self.content_messages.append(messages_section.ascii_history)
-        self.content_messages.append(messages_section.ascii_scouts)
+        self.content.add_item_to_section("Messages", messages_section.ascii_instructions)
+        self.content.add_item_to_section("Messages", messages_section.ascii_hints)
+        self.content.add_item_to_section("Messages", messages_section.ascii_victory)
+        self.content.add_item_to_section("Messages", messages_section.ascii_loss)
+        self.content.add_item_to_section("Messages", messages_section.ascii_history)
+        self.content.add_item_to_section("Messages", messages_section.ascii_scouts)
 
         # triggers
         trigger_manager = self.scenario.trigger_manager
@@ -236,12 +233,12 @@ class App(tk.Tk):
                 if trigger.description != "":
                     trigger_text_long = TriggerItem(ti.TYPE_OBJECTIVE_LONG, trigger.name, trigger.description,
                                                     trigger_manager.triggers.index(trigger), NO_EFFECT)
-                    self.content_triggers.append(trigger_text_long)
+                    self.content.add_item_to_section("Triggers", trigger_text_long)
 
                 if trigger.short_description != "":
                     trigger_text_short = TriggerItem(ti.TYPE_OBJECTIVE_SHORT, trigger.name, trigger.short_description,
                                                      trigger_manager.triggers.index(trigger), NO_EFFECT)
-                    self.content_triggers.append(trigger_text_short)
+                    self.content.add_item_to_section("Triggers", trigger_text_short)
 
             else:
                 for effect in trigger.effects:
@@ -249,50 +246,62 @@ class App(tk.Tk):
                         effect_message = TriggerItem(ti.TYPE_EFFECT_MESSAGE, trigger.name, effect.message,
                                                      trigger_manager.triggers.index(trigger),
                                                      trigger.effects.index(effect))
-                        self.content_triggers.append(effect_message)
+                        self.content.add_item_to_section("Triggers", effect_message)
+
+        # raw
+        self.content.create_raw_content()
 
     def _load_content_into_ui(self):
         self.entry_scenario_name.delete(0, "end")
-        self.entry_scenario_name.insert(0, self.internal_file_name)
+        self.entry_scenario_name.insert(0, self.content.internal_file_name)
 
         for player_index in range(0, 8):
             self.player_entries[player_index].delete(0, "end")
-            self.player_entries[player_index].insert(0, self.content_players[player_index])
+            self.player_entries[player_index].insert(0, self.content.get_section("Players")[player_index])
 
         self.textfield_message.delete(1.0, "end")
-        self.textfield_message.insert(1.0, self.content_messages[self.last_message_index])
+        self.textfield_message.insert(1.0, self.content.get_section("Messages")[self.last_message_index])
 
-        for trigger_item in self.content_triggers:
+        self.listbox_triggers.delete(0, "end")
+
+        for trigger_item in self.content.get_section("Triggers"):
             if trigger_item.effect_index != NO_EFFECT:
                 self.listbox_triggers.insert("end", trigger_item.name + " - E#" + str(trigger_item.effect_index))
             else:
                 self.listbox_triggers.insert("end", trigger_item.name)
 
         self.textfield_triggers.delete(1.0, "end")
-        self.textfield_triggers.insert(1.0, self.content_triggers[self.last_trigger_index].text)
+        self.textfield_triggers.insert(1.0, self.content.get_section("Triggers")[self.last_trigger_index].text)
+
+        self.textfield_raw.delete(1.0, "end")
+        self.textfield_raw.insert("end", self.content.get_section("Raw"))
 
     def _reload_content(self):
         if self.scenario_loaded:
-            self.content_players.clear()
-            self.content_messages.clear()
-            self.content_triggers.clear()
+            self.content.clear()
             self._load_content_from_scenario()
             self._load_content_into_ui()
 
     def _message_selected(self, event):
         if self.scenario_loaded:
-            self.content_messages[self.last_message_index] = self.textfield_message.get(1.0, "end")
+            self.content.get_section("Messages")[self.last_message_index] = self.textfield_message.get(1.0, "end")
             self.last_message_index = self.combobox_message.current()
 
             self.textfield_message.delete(1.0, "end")
-            self.textfield_message.insert(1.0, self.content_messages[self.last_message_index])
+            self.textfield_message.insert(1.0, self.content.get_section("Messages")[self.last_message_index])
         else:
             self.last_message_index = self.combobox_message.current()
 
     def _trigger_selected(self, event):
-        if self.scenario_loaded and len(self.content_triggers) > 0 and len(self.listbox_triggers.curselection()) > 0:
-            self.content_triggers[self.last_trigger_index].text = self.textfield_triggers.get(1.0, "end")
+        curselection = self.listbox_triggers.curselection()
+
+        if self.scenario_loaded and len(self.content.get_section("Triggers")) > 0 and len(curselection) > 0:
+            self.content.get_section("Triggers")[self.last_trigger_index].text = self.textfield_triggers.get(1.0, "end")
             self.last_trigger_index = self.listbox_triggers.curselection()[0]
 
             self.textfield_triggers.delete(1.0, "end")
-            self.textfield_triggers.insert(1.0, self.content_triggers[self.last_trigger_index].text)
+            self.textfield_triggers.insert(1.0, self.content.get_section("Triggers")[self.last_trigger_index].text)
+
+    def button_apply_clicked(self):
+        self.content.apply_raw_content(self.textfield_raw.get(1.0, "end"))
+        self._load_content_into_ui()
