@@ -13,7 +13,6 @@ from trigger_item import TriggerItem
 # constants
 EFFECT_56 = 56
 EFFECT_91 = 91
-NO_EFFECT = -1
 APP_TITLE = "AoE2ScenarioStringEditor"
 THEME_DEFAULT = "clam"
 THEME_WINDOWS = "vista"
@@ -232,12 +231,12 @@ class App(tk.Tk):
             if trigger.display_as_objective:
                 if trigger.description != "":
                     trigger_text_long = TriggerItem(ti.TYPE_OBJECTIVE_LONG, trigger.name, trigger.description,
-                                                    trigger_manager.triggers.index(trigger), NO_EFFECT)
+                                                    trigger_manager.triggers.index(trigger), ti.NO_EFFECT)
                     self.content.add_item_to_section("Triggers", trigger_text_long)
 
                 if trigger.short_description != "":
                     trigger_text_short = TriggerItem(ti.TYPE_OBJECTIVE_SHORT, trigger.name, trigger.short_description,
-                                                     trigger_manager.triggers.index(trigger), NO_EFFECT)
+                                                     trigger_manager.triggers.index(trigger), ti.NO_EFFECT)
                     self.content.add_item_to_section("Triggers", trigger_text_short)
 
             else:
@@ -265,7 +264,7 @@ class App(tk.Tk):
         self.listbox_triggers.delete(0, "end")
 
         for trigger_item in self.content.get_section("Triggers"):
-            if trigger_item.effect_index != NO_EFFECT:
+            if trigger_item.effect_index != ti.NO_EFFECT:
                 self.listbox_triggers.insert("end", trigger_item.name + " - E#" + str(trigger_item.effect_index))
             else:
                 self.listbox_triggers.insert("end", trigger_item.name)
