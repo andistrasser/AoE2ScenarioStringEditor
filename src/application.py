@@ -117,24 +117,24 @@ class App:
 
         for player_index in range(0, 8):
             self.ui.player_entries[player_index].delete(0, "end")
-            self.ui.player_entries[player_index].insert(0, self.content.get_section("Players")[player_index])
+            self.ui.player_entries[player_index].insert(0, self.content.get("Players")[player_index])
 
         self.ui.textfield_message.delete(1.0, "end")
-        self.ui.textfield_message.insert(1.0, self.content.get_section("Messages")[self.last_message_index])
+        self.ui.textfield_message.insert(1.0, self.content.get("Messages")[self.last_message_index])
 
         self.ui.listbox_triggers.delete(0, "end")
 
-        for trigger_item in self.content.get_section("Triggers"):
+        for trigger_item in self.content.get("Triggers"):
             if trigger_item.effect_index != ti.NO_EFFECT:
                 self.ui.listbox_triggers.insert("end", trigger_item.name + " - E#" + str(trigger_item.effect_index))
             else:
                 self.ui.listbox_triggers.insert("end", trigger_item.name)
 
         self.ui.textfield_triggers.delete(1.0, "end")
-        self.ui.textfield_triggers.insert(1.0, self.content.get_section("Triggers")[self.last_trigger_index].text)
+        self.ui.textfield_triggers.insert(1.0, self.content.get("Triggers")[self.last_trigger_index].text)
 
         self.ui.textfield_raw.delete(1.0, "end")
-        self.ui.textfield_raw.insert("end", self.content.get_section("Raw"))
+        self.ui.textfield_raw.insert("end", self.content.get("Raw"))
 
     def _reload_content(self):
         if self.scenario_loaded:
@@ -144,24 +144,24 @@ class App:
 
     def _message_selected(self, event):
         if self.scenario_loaded:
-            self.content.get_section("Messages")[self.last_message_index] = self.ui.textfield_message.get(1.0, "end")
+            self.content.get("Messages")[self.last_message_index] = self.ui.textfield_message.get(1.0, "end")
             self.last_message_index = self.ui.combobox_message.current()
 
             self.ui.textfield_message.delete(1.0, "end")
-            self.ui.textfield_message.insert(1.0, self.content.get_section("Messages")[self.last_message_index])
+            self.ui.textfield_message.insert(1.0, self.content.get("Messages")[self.last_message_index])
         else:
             self.last_message_index = self.ui.combobox_message.current()
 
     def _trigger_selected(self, event):
         curselection = self.ui.listbox_triggers.curselection()
 
-        if self.scenario_loaded and len(self.content.get_section("Triggers")) > 0 and len(curselection) > 0:
-            self.content.get_section("Triggers")[self.last_trigger_index].text = self.ui.textfield_triggers.get(1.0,
-                                                                                                                "end")
+        if self.scenario_loaded and len(self.content.get("Triggers")) > 0 and len(curselection) > 0:
+            self.content.get("Triggers")[self.last_trigger_index].text = self.ui.textfield_triggers.get(1.0,
+                                                                                                        "end")
             self.last_trigger_index = self.ui.listbox_triggers.curselection()[0]
 
             self.ui.textfield_triggers.delete(1.0, "end")
-            self.ui.textfield_triggers.insert(1.0, self.content.get_section("Triggers")[self.last_trigger_index].text)
+            self.ui.textfield_triggers.insert(1.0, self.content.get("Triggers")[self.last_trigger_index].text)
 
     def _button_apply_clicked(self):
         self.content.apply_raw_content(self.ui.textfield_raw.get(1.0, "end"))

@@ -64,7 +64,7 @@ class Content:
             else:
                 self._content["Triggers"][index - length_players - length_messages].text = _multi_line(raw_lines[index])
 
-    def get_section(self, section):
+    def get(self, section):
         if section in READABLE_SECTIONS:
             return self._content[section]
         else:
