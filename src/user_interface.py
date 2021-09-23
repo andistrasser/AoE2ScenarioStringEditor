@@ -162,15 +162,15 @@ class UserInterface(tk.Tk):
         self.columnconfigure(0, weight=1)
         self.rowconfigure(0, weight=1)
 
-    def _lock_ui(self, lock):
+    def lock_ui(self, lock):
         state = "normal"
 
         if lock:
             state = "disabled"
 
-        self.ui.menu_file.entryconfig(MENU_RELOAD, state=state)
-        self.ui.menu_file.entryconfig(MENU_SAVE, state=state)
-        self.ui.menu_file.entryconfig(MENU_SAVE_AS, state=state)
+        self.menu_file.entryconfig(MENU_RELOAD, state=state)
+        self.menu_file.entryconfig(MENU_SAVE, state=state)
+        self.menu_file.entryconfig(MENU_SAVE_AS, state=state)
         self.entry_scenario_name.config(state=state)
         self.combobox_message.config(state=state)
         self.textfield_message.config(state=state)
@@ -178,6 +178,9 @@ class UserInterface(tk.Tk):
         self.textfield_triggers.config(state=state)
         self.textfield_raw.config(state=state)
         self.button_apply.config(state=state)
+
+        for player_entry in self.player_entries:
+            player_entry.config(state=state)
 
     def set_status(self, text):
         self.status.set(text)
