@@ -2,6 +2,7 @@ import os
 from tkinter.filedialog import askopenfilename
 
 import trigger_item as ti
+import user_interface as ui
 from content import Content
 from scenario_handler import ScenarioHandler
 from trigger_item import TriggerItem
@@ -22,6 +23,7 @@ class App:
     def __init__(self):
         self._init()
         self._bind_functions()
+        self.ui.lock_ui(True)
         self.ui.mainloop()
 
     # build user interface, initialize variables
@@ -35,8 +37,8 @@ class App:
         self.content = Content()
 
     def _bind_functions(self):
-        self.ui.menu_file.entryconfig(0, command=self._open_file)
-        self.ui.menu_file.entryconfig(1, command=self._reload_content)
+        self.ui.menu_file.entryconfig(ui.MENU_OPEN, command=self._open_file)
+        self.ui.menu_file.entryconfig(ui.MENU_RELOAD, command=self._reload_content)
         self.ui.combobox_message.bind("<<ComboboxSelected>>", self._message_selected)
         self.ui.listbox_triggers.bind("<<ListboxSelect>>", self._trigger_selected)
 
@@ -57,6 +59,7 @@ class App:
             self._load_content()
             self._display_content()
             self.scenario_loaded = True
+            self.ui.lock_ui(False)
             self.ui.set_status(file_name + STATUS_LOADING_SUCCESSFUL)
         except:
             self.ui.set_status(file_name + STATUS_LOADING_FAILED)
