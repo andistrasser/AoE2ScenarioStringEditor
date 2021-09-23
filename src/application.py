@@ -41,6 +41,7 @@ class App:
         self.ui.menu_file.entryconfig(ui.MENU_RELOAD, command=self._reload_content)
         self.ui.combobox_message.bind("<<ComboboxSelected>>", self._message_selected)
         self.ui.listbox_triggers.bind("<<ListboxSelect>>", self._trigger_selected)
+        self.ui.button_apply.config(command=self._button_apply_clicked)
 
     def _open_file(self):
         self.file_path = askopenfilename(filetypes=FILETYPES)
@@ -119,8 +120,7 @@ class App:
             self.ui.player_entries[player_index].delete(0, "end")
             self.ui.player_entries[player_index].insert(0, self.content.get("Players")[player_index])
 
-        self.ui.textfield_message.delete(1.0, "end")
-        self.ui.textfield_message.insert(1.0, self.content.get("Messages")[self.last_message_index])
+        ui.set_textfield_text(self.ui.textfield_message, self.content.get("Messages")[self.last_message_index])
 
         self.ui.listbox_triggers.delete(0, "end")
 
@@ -130,11 +130,8 @@ class App:
             else:
                 self.ui.listbox_triggers.insert("end", trigger_item.name)
 
-        self.ui.textfield_triggers.delete(1.0, "end")
-        self.ui.textfield_triggers.insert(1.0, self.content.get("Triggers")[self.last_trigger_index].text)
-
-        self.ui.textfield_raw.delete(1.0, "end")
-        self.ui.textfield_raw.insert("end", self.content.get("Raw"))
+        ui.set_textfield_text(self.ui.textfield_triggers, self.content.get("Triggers")[self.last_trigger_index].text)
+        ui.set_textfield_text(self.ui.textfield_raw, self.content.get("Raw"))
 
     def _reload_content(self):
         if self.scenario_loaded:
@@ -147,8 +144,7 @@ class App:
             self.content.get("Messages")[self.last_message_index] = self.ui.textfield_message.get(1.0, "end")
             self.last_message_index = self.ui.combobox_message.current()
 
-            self.ui.textfield_message.delete(1.0, "end")
-            self.ui.textfield_message.insert(1.0, self.content.get("Messages")[self.last_message_index])
+            ui.set_textfield_text(self.ui.textfield_message, self.content.get("Messages")[self.last_message_index])
         else:
             self.last_message_index = self.ui.combobox_message.current()
 
@@ -159,8 +155,8 @@ class App:
             self.content.get("Triggers")[self.last_trigger_index].text = self.ui.textfield_triggers.get(1.0, "end")
             self.last_trigger_index = self.ui.listbox_triggers.curselection()[0]
 
-            self.ui.textfield_triggers.delete(1.0, "end")
-            self.ui.textfield_triggers.insert(1.0, self.content.get("Triggers")[self.last_trigger_index].text)
+            ui.set_textfield_text(self.ui.textfield_triggers,
+                                  self.content.get("Triggers")[self.last_trigger_index].text)
 
     def _button_apply_clicked(self):
         self.content.apply_raw_content(self.ui.textfield_raw.get(1.0, "end"))

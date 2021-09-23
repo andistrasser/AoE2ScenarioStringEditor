@@ -34,6 +34,11 @@ LABEL_SCENARIO_NAME = "Scenario name:"
 COMBOBOX_MESSAGES_CONTENT = ["Scenario Instructions", "Hints", "Victory", "Loss", "History", "Scout"]
 
 
+def set_textfield_text(textfield, text):
+    textfield.delete(1.0, "end")
+    textfield.insert(1.0, text)
+
+
 class UserInterface(tk.Tk):
     def __init__(self):
         super().__init__()
