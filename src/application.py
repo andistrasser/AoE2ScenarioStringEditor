@@ -265,6 +265,9 @@ class App(tk.Tk):
             else:
                 self.listbox_triggers.insert("end", trigger_item.name)
 
+        self.textfield_triggers.delete(1.0, "end")
+        self.textfield_triggers.insert(1.0, self.content_triggers[self.last_trigger_index].text)
+
     def _reload_content(self):
         if self.scenario_loaded:
             self.content_players.clear()
@@ -285,7 +288,8 @@ class App(tk.Tk):
 
     def _trigger_selected(self, event):
         if self.scenario_loaded and len(self.content_triggers) > 0 and len(self.listbox_triggers.curselection()) > 0:
-            selected_index = self.listbox_triggers.curselection()[0]
+            self.content_triggers[self.last_trigger_index].text = self.textfield_triggers.get(1.0, "end")
+            self.last_trigger_index = self.listbox_triggers.curselection()[0]
 
             self.textfield_triggers.delete(1.0, "end")
-            self.textfield_triggers.insert(1.0, self.content_triggers[selected_index].text)
+            self.textfield_triggers.insert(1.0, self.content_triggers[self.last_trigger_index].text)
