@@ -55,6 +55,7 @@ class App(tk.Tk):
         self.status.set(STATUS_NO_SCENARIO_LOADED)
         self.last_message_index = 0
         self.last_trigger_index = 0
+        self.internal_file_name = ""
         self.content_players = []
         self.content_messages = []
         self.content_triggers = []
@@ -207,11 +208,10 @@ class App(tk.Tk):
             self._set_status(file_name + STATUS_LOADING_FAILED)
 
     def _load_content_from_scenario(self):
-        # file header section
-        file_header_section = self.scenario.sections["FileHeader"]
-
         # data header section
         data_header_section = self.scenario.sections["DataHeader"]
+
+        self.internal_file_name = data_header_section.filename
 
         for index in range(0, 8):
             player_name = str(data_header_section.player_names[index])
@@ -252,6 +252,9 @@ class App(tk.Tk):
                         self.content_triggers.append(effect_message)
 
     def _load_content_into_ui(self):
+        self.entry_scenario_name.delete(0, "end")
+        self.entry_scenario_name.insert(0, self.internal_file_name)
+
         for player_index in range(0, 8):
             self.player_entries[player_index].delete(0, "end")
             self.player_entries[player_index].insert(0, self.content_players[player_index])
