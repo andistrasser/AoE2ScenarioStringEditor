@@ -6,9 +6,9 @@ NO_EFFECT = -1
 
 
 class TriggerItem:
-    def __init__(self, item_type, name, text, trigg_index, effect_index):
-        self.item_type = item_type
+    def __init__(self, type, name, text, trigger_index, effect_index):
+        self.type = type
         self.name = name
         self.text = text
-        self.trigger_index = trigg_index
+        self.trigger_index = trigger_index
         self.effect_index = effect_index
