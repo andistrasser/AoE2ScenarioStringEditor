@@ -36,11 +36,6 @@ LABEL_FILE_EXTENSION = ".aoe2scenario"
 COMBOBOX_MESSAGES_CONTENT = ["Scenario Instructions", "Hints", "Victory", "Loss", "History", "Scout"]
 
 
-def set_textfield_text(textfield, text):
-    textfield.delete(1.0, "end")
-    textfield.insert(1.0, text)
-
-
 class UserInterface(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -195,6 +190,11 @@ class UserInterface(tk.Tk):
     def set_status(self, text):
         self.status.set(text)
         self.update()
+
+    @staticmethod
+    def set_textfield_text(textfield, text):
+        textfield.delete(1.0, "end")
+        textfield.insert(1.0, text)
 
     @staticmethod
     def show_error_dialog(message):
