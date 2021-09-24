@@ -1,5 +1,6 @@
 import os
 from tkinter.filedialog import askopenfilename
+from tkinter.filedialog import asksaveasfilename
 
 import trigger_item as ti
 import user_interface as ui
@@ -12,10 +13,15 @@ from user_interface import UserInterface
 EFFECT_56 = 56
 EFFECT_91 = 91
 STATUS_NO_SCENARIO_LOADED = "no scenario file loaded at the moment"
-STATUS_LOADING = "loading "
-STATUS_LOADING_SUCCESSFUL = " loaded successfully"
-STATUS_LOADING_FAILED = " could not be loaded"
+STATUS_READING = "reading "
+STATUS_READING_SUCCESSFUL = " read successfully"
+STATUS_READING_FAILED = " could not be read"
+STATUS_WRITING = "writing "
+STATUS_WRITING_SUCCESSFUL = " written successfully"
+STATUS_WRITING_FAILED = " could not be written"
+STATUS_INVALID_FILE_NAME = "invalid file name "
 FILETYPES = [("AoE2DE scenario file", "*.aoe2scenario")]
+SCENARIO_FILE_EXTENSION = ".aoe2scenario"
 
 
 # application class
@@ -39,6 +45,8 @@ class App:
     def _bind_functions(self):
         self.ui.menu_file.entryconfig(ui.MENU_OPEN, command=self._open_file)
         self.ui.menu_file.entryconfig(ui.MENU_RELOAD, command=self._reload_content)
+        self.ui.menu_file.entryconfig(ui.MENU_SAVE, command=lambda: self._save(False))
+        self.ui.menu_file.entryconfig(ui.MENU_SAVE_AS, command=lambda: self._save(True))
         self.ui.combobox_message.bind("<<ComboboxSelected>>", self._message_selected)
         self.ui.listbox_triggers.bind("<<ListboxSelect>>", self._trigger_selected)
         self.ui.button_apply.config(command=self._button_apply_clicked)
@@ -54,16 +62,16 @@ class App:
         file_name = os.path.basename(self.file_path)
 
         try:
-            self.ui.set_status(STATUS_LOADING + file_name)
+            self.ui.set_status(STATUS_READING + file_name)
             self.scenario = self.scenario_handler.load_scenario()
             self.content.clear()
             self._load_content()
             self.ui.lock(False)
             self._display_content()
             self.scenario_loaded = True
-            self.ui.set_status(file_name + STATUS_LOADING_SUCCESSFUL)
+            self.ui.set_status(file_name + STATUS_READING_SUCCESSFUL)
         except:
-            self.ui.set_status(file_name + STATUS_LOADING_FAILED)
+            self.ui.set_status(file_name + STATUS_READING_FAILED)
 
     def _load_content(self):
         # data header section
@@ -72,7 +80,7 @@ class App:
         self.content.internal_file_name = data_header_section.filename
 
         for index in range(0, 8):
-            player_name = str(data_header_section.player_names[index])
+            player_name = data_header_section.player_names[index]
 
             self.content.add_item_to_section("Players", player_name.replace("\x00", ""))
 
@@ -113,12 +121,12 @@ class App:
         self.content.create_raw_content()
 
     def _display_content(self):
-        self.ui.entry_scenario_name.delete(0, "end")
-        self.ui.entry_scenario_name.insert(0, self.content.internal_file_name)
+        self.ui.entry_file_name.delete(0, "end")
+        self.ui.entry_file_name.insert(0, self.content.internal_file_name.replace(SCENARIO_FILE_EXTENSION, ""))
 
-        for player_index in range(0, 8):
-            self.ui.player_entries[player_index].delete(0, "end")
-            self.ui.player_entries[player_index].insert(0, self.content.get("Players")[player_index])
+        for index in range(0, 8):
+            self.ui.player_entries[index].delete(0, "end")
+            self.ui.player_entries[index].insert(0, self.content.get("Players")[index])
 
         ui.set_textfield_text(self.ui.textfield_message, self.content.get("Messages")[self.last_message_index])
 
@@ -138,6 +146,68 @@ class App:
             self.content.clear()
             self._load_content()
             self._display_content()
+
+    def _prepare_save(self):
+        self.content.internal_file_name = self.ui.entry_file_name.get() + SCENARIO_FILE_EXTENSION
+
+        for player_index in range(0, len(self.ui.player_entries)):
+            player_name = self.ui.player_entries[player_index].get()
+
+            for char_index in range(0, 256):
+                if char_index >= len(player_name):
+                    player_name += "\x00"
+
+            self.content.get("Players")[player_index] = player_name
+
+        self.content.get("Messages")[self.last_message_index] = self.ui.textfield_message.get(1.0, "end")
+        self.content.get("Triggers")[self.last_trigger_index].text = self.ui.textfield_triggers.get(1.0, "end")
+
+    def _save_content(self):
+        # data header section
+        data_header_section = self.scenario.sections["DataHeader"]
+
+        data_header_section.filename = self.content.internal_file_name
+
+        for index in range(0, 8):
+            data_header_section.player_names[index] = self.content.get("Players")[index]
+
+        # messages section
+        messages_section = self.scenario.sections["Messages"]
+        messages_section.ascii_instructions = self.content.get("Messages")[0]
+        messages_section.ascii_hints = self.content.get("Messages")[1]
+        messages_section.ascii_victory = self.content.get("Messages")[2]
+        messages_section.ascii_loss = self.content.get("Messages")[3]
+        messages_section.ascii_history = self.content.get("Messages")[4]
+        messages_section.ascii_scouts = self.content.get("Messages")[5]
+
+        # triggers
+        trigger_manager = self.scenario.trigger_manager
+
+        for item in self.content.get("Triggers"):
+            if item.type == ti.TYPE_OBJECTIVE_LONG:
+                trigger_manager.triggers[item.trigger_index].description = item.text
+            elif item.type == ti.TYPE_OBJECTIVE_SHORT:
+                trigger_manager.triggers[item.trigger_index].short_description = item.text
+            elif item.type == ti.TYPE_EFFECT_MESSAGE:
+                trigger_manager.triggers[item.trigger_index].effects[item.effect_index].message = item.text
+
+    def _save(self, save_as):
+        self._prepare_save()
+        self._save_content()
+
+        if save_as:
+            self.file_path = asksaveasfilename(filetypes=FILETYPES)
+
+            if len(self.file_path) == 0:
+                return
+            elif SCENARIO_FILE_EXTENSION not in self.file_path:
+                self.ui.set_status(STATUS_INVALID_FILE_NAME + os.path.basename(self.file_path))
+
+        file_name = os.path.basename(self.file_path)
+
+        self.ui.set_status(STATUS_WRITING + file_name)
+        self.scenario_handler.save_scenario(self.scenario, self.file_path)
+        self.ui.set_status(file_name + STATUS_WRITING_SUCCESSFUL)
 
     def _message_selected(self, event):
         if self.scenario_loaded:

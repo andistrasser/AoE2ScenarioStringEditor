@@ -30,7 +30,8 @@ LABEL_EXIT = "Exit"
 LABEL_FILE = "File"
 LABEL_HELP = "Help"
 LABEL_ABOUT = "About"
-LABEL_SCENARIO_NAME = "Scenario name:"
+LABEL_SCENARIO_NAME = "Internal file name:"
+LABEL_FILE_EXTENSION = ".aoe2scenario"
 COMBOBOX_MESSAGES_CONTENT = ["Scenario Instructions", "Hints", "Victory", "Loss", "History", "Scout"]
 
 
@@ -106,8 +107,11 @@ class UserInterface(tk.Tk):
         label_scenario_name = ttk.Label(tab_general, text=LABEL_SCENARIO_NAME)
         label_scenario_name.grid(row=0, column=0, padx=10, pady=(10, 0), sticky="e")
 
-        self.entry_scenario_name = ttk.Entry(tab_general, width=35)
-        self.entry_scenario_name.grid(row=0, column=1, padx=0, pady=(10, 0), sticky="ew")
+        self.entry_file_name = ttk.Entry(tab_general, width=30)
+        self.entry_file_name.grid(row=0, column=1, padx=0, pady=(10, 0), sticky="e")
+
+        label_file_extension = ttk.Label(tab_general, text=LABEL_FILE_EXTENSION)
+        label_file_extension.grid(row=0, column=2, pady=(10, 0), sticky="e")
 
         # player tab widgets
         self.player_labels = []
@@ -176,7 +180,7 @@ class UserInterface(tk.Tk):
         self.menu_file.entryconfig(MENU_RELOAD, state=state)
         self.menu_file.entryconfig(MENU_SAVE, state=state)
         self.menu_file.entryconfig(MENU_SAVE_AS, state=state)
-        self.entry_scenario_name.config(state=state)
+        self.entry_file_name.config(state=state)
         self.combobox_message.config(state=state)
         self.textfield_message.config(state=state)
         self.listbox_triggers.config(state=state)
