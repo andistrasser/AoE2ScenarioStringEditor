@@ -8,6 +8,7 @@ class ScenarioHandler:
 
     # loads the scenario from the given file path
     def load_scenario(self, file_path):
+        self.scenario = None
         self.scenario = AoE2DEScenario.from_file(file_path)
 
     # gets the given data section

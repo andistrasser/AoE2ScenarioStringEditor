@@ -72,7 +72,7 @@ class UserInterface(tk.Tk):
         menu_file.insert(MENU_OPEN, "command", label=LABEL_OPEN, accelerator="Ctrl+O")
         menu_file.insert(MENU_RELOAD, "command", label=LABEL_RELOAD, accelerator="Ctrl+R")
         menu_file.insert(MENU_SAVE, "command", label=LABEL_SAVE, accelerator="Ctrl+S")
-        menu_file.insert(MENU_SAVE_AS, "command", label=LABEL_SAVE_AS, accelerator="Shift+Ctrl+S")
+        menu_file.insert(MENU_SAVE_AS, "command", label=LABEL_SAVE_AS, accelerator="Ctrl+Alt+S")
         menu_file.add_separator()
         menu_file.insert(MENU_EXIT, "command", label=LABEL_EXIT, command=self.quit, accelerator="Ctrl+Q")
         self.menu_file = menu_file
@@ -211,3 +211,7 @@ class UserInterface(tk.Tk):
     @staticmethod
     def show_info_dialog(title, message):
         messagebox.showinfo(title, message)
+
+    # quits the application
+    def exit(self, _event=None):
+        self.quit()

@@ -41,25 +41,37 @@ class App:
         self.file = ""
         self.ui = UserInterface()
         self.ui.status.set(STATUS_NO_SCENARIO_LOADED)
+        self.scenario_handler = None
         self.last_message_index = 0
         self.last_trigger_index = 0
         self.content = Content()
 
     # binds functions to the ui widgets
     def _bind_functions(self):
+        # menu event bindings
         self.ui.menu_file.entryconfig(ui.MENU_OPEN, command=self._open_file)
         self.ui.menu_file.entryconfig(ui.MENU_RELOAD, command=self._reload_content)
-        self.ui.menu_file.entryconfig(ui.MENU_SAVE, command=lambda: self._write(False))
-        self.ui.menu_file.entryconfig(ui.MENU_SAVE_AS, command=lambda: self._write(True))
+        self.ui.menu_file.entryconfig(ui.MENU_SAVE, command=lambda: self._save(False))
+        self.ui.menu_file.entryconfig(ui.MENU_SAVE_AS, command=lambda: self._save(True))
         self.ui.menu_help.entryconfig(ui.MENU_HELP, command=self._help)
         self.ui.menu_help.entryconfig(ui.MENU_ABOUT, command=self._about)
+
+        # widget event bindings
         self.ui.entry_file_name.bind("<FocusOut>", self._entry_file_name_focus_lost)
         self.ui.combobox_message.bind("<<ComboboxSelected>>", self._message_selected)
         self.ui.listbox_triggers.bind("<<ListboxSelect>>", self._trigger_selected)
         self.ui.button_apply.config(command=self._button_apply_clicked)
 
+        # keyboard shortcuts
+        self.ui.bind("<F1>", self._help)
+        self.ui.bind("<Control-o>", self._open_file)
+        self.ui.bind("<Control-r>", self._reload_content)
+        self.ui.bind("<Control-s>", lambda save_as: self._save(False))
+        self.ui.bind("<Control-Alt-s>", lambda save_as: self._save(True))
+        self.ui.bind("<Control-q>", self.ui.exit)
+
     # opens the file for further reading actions
-    def _open_file(self):
+    def _open_file(self, _event=None):
         self.file_path = askopenfilename(filetypes=FILETYPES)
 
         if len(self.file_path) == 0:
@@ -156,10 +168,11 @@ class App:
         self.ui.set_textfield_text(self.ui.textfield_raw, self.content.get("Raw"))
 
     # reloads the content from the scenario file
-    def _reload_content(self):
-        self.content.clear()
-        self._load_content()
-        self._display_content()
+    def _reload_content(self, _event=None):
+        if self.scenario_handler is not None and self.scenario_handler.is_scenario_loaded():
+            self.content.clear()
+            self._load_content()
+            self._display_content()
 
     # reads all the strings from the ui widgets and writes them into the content container
     def _prepare_write(self):
@@ -208,35 +221,36 @@ class App:
                 triggers[item.trigger_index].effects[item.effect_index].message = item.text
 
     # writes the scenario file to the file system
-    def _write(self, save_as):
-        self._prepare_write()
-        self._write_content_to_scenario()
+    def _save(self, save_as, _event=None):
+        if self.scenario_handler is not None and self.scenario_handler.is_scenario_loaded():
+            self._prepare_write()
+            self._write_content_to_scenario()
+    
+            if save_as:
+                self.file_path = asksaveasfilename(filetypes=FILETYPES)
 
-        if save_as:
-            self.file_path = asksaveasfilename(filetypes=FILETYPES)
+                if len(self.file_path) == 0:
+                    return
+                elif SCENARIO_FILE_EXTENSION not in self.file_path:
+                    self.ui.set_status(STATUS_INVALID_FILE_NAME + os.path.basename(self.file_path))
 
-            if len(self.file_path) == 0:
-                return
-            elif SCENARIO_FILE_EXTENSION not in self.file_path:
-                self.ui.set_status(STATUS_INVALID_FILE_NAME + os.path.basename(self.file_path))
+            file_name = os.path.basename(self.file_path)
 
-        file_name = os.path.basename(self.file_path)
+            self.ui.lock(True)
 
-        self.ui.lock(True)
+            try:
+                self.ui.set_status(STATUS_WRITING + file_name)
+                self.scenario_handler.save_scenario(self.file_path)
+                self.ui.set_status(file_name + STATUS_WRITING_SUCCESSFUL)
+            except Exception as ex:
+                self.ui.show_error_dialog(ex)
+                self.ui.set_status(file_name + STATUS_WRITING_FAILED)
 
-        try:
-            self.ui.set_status(STATUS_WRITING + file_name)
-            self.scenario_handler.save_scenario(self.file_path)
-            self.ui.set_status(file_name + STATUS_WRITING_SUCCESSFUL)
-        except Exception as ex:
-            self.ui.show_error_dialog(ex)
-            self.ui.set_status(file_name + STATUS_WRITING_FAILED)
-
-        self.ui.lock(False)
+            self.ui.lock(False)
 
     # opens the github doc page
     @staticmethod
-    def _help():
+    def _help(_event=None):
         webbrowser.open(HELP_GITHUB_DOC)
 
     def _about(self):
