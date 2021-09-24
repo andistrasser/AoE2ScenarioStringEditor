@@ -36,11 +36,13 @@ LABEL_FILE_EXTENSION = ".aoe2scenario"
 COMBOBOX_MESSAGES_CONTENT = ["Scenario Instructions", "Hints", "Victory", "Loss", "History", "Scout"]
 
 
+# user interface class
 class UserInterface(tk.Tk):
     def __init__(self):
         super().__init__()
         self._build_ui()
 
+    # builds the user interface
     def _build_ui(self):
         self.geometry("720x470")
         self.title(APP_TITLE)
@@ -167,6 +169,7 @@ class UserInterface(tk.Tk):
         self.columnconfigure(0, weight=1)
         self.rowconfigure(0, weight=1)
 
+    # locks the ui to prevent unwanted input
     def lock(self, lock):
         state = "normal"
 
@@ -187,15 +190,18 @@ class UserInterface(tk.Tk):
         for player_entry in self.player_entries:
             player_entry.config(state=state)
 
+    # sets the status bar text
     def set_status(self, text):
         self.status.set(text)
         self.update()
 
+    # sets the text of a given textfield
     @staticmethod
     def set_textfield_text(textfield, text):
         textfield.delete(1.0, "end")
         textfield.insert(1.0, text)
 
+    # shows and error dialog
     @staticmethod
     def show_error_dialog(message):
         messagebox.showerror("Error", message)

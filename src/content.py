@@ -3,11 +3,13 @@ WRITEABLE_SECTIONS = ["Players", "Messages", "Triggers"]
 READABLE_SECTIONS = ["Players", "Messages", "Triggers", "Raw"]
 
 
+# content class
 class Content:
     def __init__(self):
         self.internal_file_name = ""
         self._content = {"Players": [], "Messages": [], "Triggers": [], "Raw": ""}
 
+    # clears the content container
     def clear(self):
         self.internal_file_name = ""
         self._content["Players"].clear()
@@ -15,10 +17,12 @@ class Content:
         self._content["Triggers"].clear()
         self._content["Raw"] = ""
 
+    # adds an item to a given section
     def add_item_to_section(self, section, item):
         if section in WRITEABLE_SECTIONS:
             self._content[section].append(item)
 
+    # creates the raw content where each item of the content container consists of one line
     def create_raw_content(self):
         for player in self._content["Players"]:
             self._content["Raw"] += (player + "\n")
@@ -29,14 +33,17 @@ class Content:
         for trigger in self._content["Triggers"]:
             self._content["Raw"] += (self._one_line(trigger.text) + "\n")
 
+    # replaces the invisible new line character with \n
     @staticmethod
     def _one_line(string):
         return string.replace("\n", "\\n")
 
+    # replaces \n with the invisible new line character
     @staticmethod
     def _multi_line(string):
         return string.replace("\\n", "\n")
 
+    # fills the content container with the content of the raw section
     def apply_raw_content(self, raw_content):
         self._content["Raw"] = raw_content
         raw_lines = []
@@ -65,6 +72,7 @@ class Content:
                 self._content["Triggers"][index - length_players - length_messages].text = self._multi_line(
                     raw_lines[index])
 
+    # returns the given section
     def get(self, section):
         if section in READABLE_SECTIONS:
             return self._content[section]

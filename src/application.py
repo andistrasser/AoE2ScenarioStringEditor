@@ -32,7 +32,7 @@ class App:
         self.ui.lock(True)
         self.ui.mainloop()
 
-    # build user interface, initialize variables
+    # builds user interface, initializes variables
     def _init(self):
         self.file = ""
         self.ui = UserInterface()
@@ -41,6 +41,7 @@ class App:
         self.last_trigger_index = 0
         self.content = Content()
 
+    # binds functions to the ui widgets
     def _bind_functions(self):
         self.ui.menu_file.entryconfig(ui.MENU_OPEN, command=self._open_file)
         self.ui.menu_file.entryconfig(ui.MENU_RELOAD, command=self._reload_content)
@@ -51,13 +52,14 @@ class App:
         self.ui.listbox_triggers.bind("<<ListboxSelect>>", self._trigger_selected)
         self.ui.button_apply.config(command=self._button_apply_clicked)
 
+    # opens the file for further reading actions
     def _open_file(self):
         self.file_path = askopenfilename(filetypes=FILETYPES)
 
         if len(self.file_path) == 0:
             return
 
-        self.scenario_handler = ScenarioHandler(self.file_path)
+        self.scenario_handler = ScenarioHandler()
 
         file_name = os.path.basename(self.file_path)
 
@@ -65,7 +67,7 @@ class App:
 
         try:
             self.ui.set_status(STATUS_READING + file_name)
-            self.scenario_handler.load_scenario()
+            self.scenario_handler.load_scenario(self.file_path)
             self.content.clear()
             self._load_content()
             self.ui.set_status(file_name + STATUS_READING_SUCCESSFUL)
@@ -77,6 +79,7 @@ class App:
             self.ui.lock(False)
             self._display_content()
 
+    # reads all kinds of strings from the scenario file and loads them into the content container
     def _load_content(self):
         # data header section
         data_header_section = self.scenario_handler.get_section("DataHeader")
@@ -123,6 +126,7 @@ class App:
         # raw
         self.content.create_raw_content()
 
+    # loads the content into the ui widgets
     def _display_content(self):
         self.ui.entry_file_name.delete(0, "end")
         self.ui.entry_file_name.insert(0, self.content.internal_file_name.replace(SCENARIO_FILE_EXTENSION, ""))
@@ -145,11 +149,13 @@ class App:
                                    self.content.get("Triggers")[self.last_trigger_index].text)
         self.ui.set_textfield_text(self.ui.textfield_raw, self.content.get("Raw"))
 
+    # reloads the content from the scenario file
     def _reload_content(self):
         self.content.clear()
         self._load_content()
         self._display_content()
 
+    # reads all the strings from the ui widgets and writes them into the content container
     def _prepare_write(self):
         self.content.internal_file_name = self.ui.entry_file_name.get() + SCENARIO_FILE_EXTENSION
 
@@ -165,7 +171,8 @@ class App:
         self.content.get("Messages")[self.last_message_index] = self.ui.textfield_message.get(1.0, "end")
         self.content.get("Triggers")[self.last_trigger_index].text = self.ui.textfield_triggers.get(1.0, "end")
 
-    def _save_content_to_scenario(self):
+    # writes the content to the scenario file
+    def _write_content_to_scenario(self):
         # data header section
         data_header_section = self.scenario_handler.get_section("DataHeader")
 
@@ -194,9 +201,10 @@ class App:
             elif item.type == ti.TYPE_EFFECT_MESSAGE:
                 triggers[item.trigger_index].effects[item.effect_index].message = item.text
 
+    # writes the scenario file to the file system
     def _write(self, save_as):
         self._prepare_write()
-        self._save_content_to_scenario()
+        self._write_content_to_scenario()
 
         if save_as:
             self.file_path = asksaveasfilename(filetypes=FILETYPES)
@@ -220,15 +228,18 @@ class App:
 
         self.ui.lock(False)
 
+    # gets called when the focus on the internal file name entry has been lost
     def _entry_file_name_focus_lost(self, _event):
         self.content.internal_file_name = self.ui.entry_file_name.get() + SCENARIO_FILE_EXTENSION
 
+    # gets called when a message combobox item has been selected
     def _message_selected(self, _event):
         self.content.get("Messages")[self.last_message_index] = self.ui.textfield_message.get(1.0, "end")
         self.last_message_index = self.ui.combobox_message.current()
 
         self.ui.set_textfield_text(self.ui.textfield_message, self.content.get("Messages")[self.last_message_index])
 
+    # gets called when a trigger has been selected
     def _trigger_selected(self, _event):
         curselection = self.ui.listbox_triggers.curselection()
 
@@ -239,6 +250,7 @@ class App:
             self.ui.set_textfield_text(self.ui.textfield_triggers,
                                        self.content.get("Triggers")[self.last_trigger_index].text)
 
+    # gets called when the apply button has been clicked
     def _button_apply_clicked(self):
         self.content.apply_raw_content(self.ui.textfield_raw.get(1.0, "end"))
         self._display_content()

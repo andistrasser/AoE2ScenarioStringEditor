@@ -5,6 +5,7 @@ TYPE_EFFECT_MESSAGE = 2
 NO_EFFECT = -1
 
 
+# trigger item class
 class TriggerItem:
     def __init__(self, item_type, name, text, trigger_index, effect_index):
         self.type = item_type
