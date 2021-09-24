@@ -47,6 +47,7 @@ class App:
         self.ui.menu_file.entryconfig(ui.MENU_RELOAD, command=self._reload_content)
         self.ui.menu_file.entryconfig(ui.MENU_SAVE, command=lambda: self._save(False))
         self.ui.menu_file.entryconfig(ui.MENU_SAVE_AS, command=lambda: self._save(True))
+        self.ui.entry_file_name.bind("<FocusOut>", self._entry_file_name_focus_lost)
         self.ui.combobox_message.bind("<<ComboboxSelected>>", self._message_selected)
         self.ui.listbox_triggers.bind("<<ListboxSelect>>", self._trigger_selected)
         self.ui.button_apply.config(command=self._button_apply_clicked)
@@ -208,6 +209,9 @@ class App:
         self.ui.set_status(STATUS_WRITING + file_name)
         self.scenario_handler.save_scenario(self.scenario, self.file_path)
         self.ui.set_status(file_name + STATUS_WRITING_SUCCESSFUL)
+
+    def _entry_file_name_focus_lost(self, event):
+        self.content.internal_file_name = self.ui.entry_file_name.get() + SCENARIO_FILE_EXTENSION
 
     def _message_selected(self, event):
         if self.scenario_loaded:
