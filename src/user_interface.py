@@ -33,6 +33,7 @@ LABEL_HELP = "Help"
 LABEL_ABOUT = "About"
 LABEL_SCENARIO_NAME = "Internal file name:"
 LABEL_FILE_EXTENSION = ".aoe2scenario"
+TITLE_ERROR = "Error"
 COMBOBOX_MESSAGES_CONTENT = ["Scenario Instructions", "Hints", "Victory", "Loss", "History", "Scout"]
 
 
@@ -201,7 +202,12 @@ class UserInterface(tk.Tk):
         textfield.delete(1.0, "end")
         textfield.insert(1.0, text)
 
-    # shows and error dialog
+    # shows an error dialog
     @staticmethod
     def show_error_dialog(message):
-        messagebox.showerror("Error", message)
+        messagebox.showerror(TITLE_ERROR, message)
+
+    # shows an info dialog
+    @staticmethod
+    def show_info_dialog(title, message):
+        messagebox.showinfo(title, message)
