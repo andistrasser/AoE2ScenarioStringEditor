@@ -3,7 +3,7 @@ from AoE2ScenarioParser.scenarios.aoe2_de_scenario import AoE2DEScenario
 
 # scenario handler class
 class ScenarioHandler:
-    def __init__(self, file_path):
+    def __init__(self):
         self.scenario = None
 
     # loads the scenario from the given file path
