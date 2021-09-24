@@ -22,6 +22,6 @@ class ScenarioHandler:
     def save_scenario(self, file_path):
         self.scenario.write_to_file(file_path)
 
-    # retunrs True if a scenario is loaded, else False
+    # returns True if a scenario is loaded, else False
     def is_scenario_loaded(self):
         return self.scenario is not None
