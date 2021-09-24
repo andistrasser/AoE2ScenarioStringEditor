@@ -35,7 +35,6 @@ class App:
     # build user interface, initialize variables
     def _init(self):
         self.file = ""
-        self.scenario_loaded = False
         self.ui = UserInterface()
         self.ui.status.set(STATUS_NO_SCENARIO_LOADED)
         self.last_message_index = 0
@@ -66,22 +65,21 @@ class App:
 
         try:
             self.ui.set_status(STATUS_READING + file_name)
-            self.scenario = self.scenario_handler.load_scenario()
+            self.scenario_handler.load_scenario()
             self.content.clear()
             self._load_content()
-            self.scenario_loaded = True
             self.ui.set_status(file_name + STATUS_READING_SUCCESSFUL)
         except Exception as ex:
             self.ui.show_error_dialog(ex)
             self.ui.set_status(file_name + STATUS_READING_FAILED)
 
-        if self.scenario_loaded:
+        if self.scenario_handler.is_scenario_loaded():
             self.ui.lock(False)
             self._display_content()
 
     def _load_content(self):
         # data header section
-        data_header_section = self.scenario.sections["DataHeader"]
+        data_header_section = self.scenario_handler.get_section("DataHeader")
 
         self.content.internal_file_name = data_header_section.filename
 
@@ -91,7 +89,7 @@ class App:
             self.content.add_item_to_section("Players", player_name.replace("\x00", ""))
 
         # messages section
-        messages_section = self.scenario.sections["Messages"]
+        messages_section = self.scenario_handler.get_section("Messages")
 
         self.content.add_item_to_section("Messages", messages_section.ascii_instructions)
         self.content.add_item_to_section("Messages", messages_section.ascii_hints)
@@ -101,26 +99,25 @@ class App:
         self.content.add_item_to_section("Messages", messages_section.ascii_scouts)
 
         # triggers
-        trigger_manager = self.scenario.trigger_manager
+        triggers = self.scenario_handler.get_triggers()
 
-        for trigger in trigger_manager.triggers:
+        for trigger in triggers:
             if trigger.display_as_objective:
                 if trigger.description != "":
                     trigger_text_long = TriggerItem(ti.TYPE_OBJECTIVE_LONG, trigger.name, trigger.description,
-                                                    trigger_manager.triggers.index(trigger), ti.NO_EFFECT)
+                                                    triggers.index(trigger), ti.NO_EFFECT)
                     self.content.add_item_to_section("Triggers", trigger_text_long)
 
                 if trigger.short_description != "":
                     trigger_text_short = TriggerItem(ti.TYPE_OBJECTIVE_SHORT, trigger.name, trigger.short_description,
-                                                     trigger_manager.triggers.index(trigger), ti.NO_EFFECT)
+                                                     triggers.index(trigger), ti.NO_EFFECT)
                     self.content.add_item_to_section("Triggers", trigger_text_short)
 
             else:
                 for effect in trigger.effects:
                     if effect.effect_type != EFFECT_56 and effect.effect_type != EFFECT_91 and effect.message != "":
                         effect_message = TriggerItem(ti.TYPE_EFFECT_MESSAGE, trigger.name, effect.message,
-                                                     trigger_manager.triggers.index(trigger),
-                                                     trigger.effects.index(effect))
+                                                     triggers.index(trigger), trigger.effects.index(effect))
                         self.content.add_item_to_section("Triggers", effect_message)
 
         # raw
@@ -149,10 +146,9 @@ class App:
         self.ui.set_textfield_text(self.ui.textfield_raw, self.content.get("Raw"))
 
     def _reload_content(self):
-        if self.scenario_loaded:
-            self.content.clear()
-            self._load_content()
-            self._display_content()
+        self.content.clear()
+        self._load_content()
+        self._display_content()
 
     def _prepare_save(self):
         self.content.internal_file_name = self.ui.entry_file_name.get() + SCENARIO_FILE_EXTENSION
@@ -171,7 +167,7 @@ class App:
 
     def _save_content(self):
         # data header section
-        data_header_section = self.scenario.sections["DataHeader"]
+        data_header_section = self.scenario_handler.get_section("DataHeader")
 
         data_header_section.filename = self.content.internal_file_name
 
@@ -179,7 +175,7 @@ class App:
             data_header_section.player_names[index] = self.content.get("Players")[index]
 
         # messages section
-        messages_section = self.scenario.sections["Messages"]
+        messages_section = self.scenario_handler.get_section("Messages")
         messages_section.ascii_instructions = self.content.get("Messages")[0]
         messages_section.ascii_hints = self.content.get("Messages")[1]
         messages_section.ascii_victory = self.content.get("Messages")[2]
@@ -188,15 +184,15 @@ class App:
         messages_section.ascii_scouts = self.content.get("Messages")[5]
 
         # triggers
-        trigger_manager = self.scenario.trigger_manager
+        triggers = self.scenario_handler.get_triggers()
 
         for item in self.content.get("Triggers"):
             if item.type == ti.TYPE_OBJECTIVE_LONG:
-                trigger_manager.triggers[item.trigger_index].description = item.text
+                triggers[item.trigger_index].description = item.text
             elif item.type == ti.TYPE_OBJECTIVE_SHORT:
-                trigger_manager.triggers[item.trigger_index].short_description = item.text
+                triggers[item.trigger_index].short_description = item.text
             elif item.type == ti.TYPE_EFFECT_MESSAGE:
-                trigger_manager.triggers[item.trigger_index].effects[item.effect_index].message = item.text
+                triggers[item.trigger_index].effects[item.effect_index].message = item.text
 
     def _save(self, save_as):
         self._prepare_save()
@@ -216,7 +212,7 @@ class App:
 
         try:
             self.ui.set_status(STATUS_WRITING + file_name)
-            self.scenario_handler.save_scenario(self.scenario, self.file_path)
+            self.scenario_handler.save_scenario(self.file_path)
             self.ui.set_status(file_name + STATUS_WRITING_SUCCESSFUL)
         except Exception as ex:
             self.ui.show_error_dialog(ex)
@@ -228,18 +224,15 @@ class App:
         self.content.internal_file_name = self.ui.entry_file_name.get() + SCENARIO_FILE_EXTENSION
 
     def _message_selected(self, event):
-        if self.scenario_loaded:
-            self.content.get("Messages")[self.last_message_index] = self.ui.textfield_message.get(1.0, "end")
-            self.last_message_index = self.ui.combobox_message.current()
+        self.content.get("Messages")[self.last_message_index] = self.ui.textfield_message.get(1.0, "end")
+        self.last_message_index = self.ui.combobox_message.current()
 
-            self.ui.set_textfield_text(self.ui.textfield_message, self.content.get("Messages")[self.last_message_index])
-        else:
-            self.last_message_index = self.ui.combobox_message.current()
+        self.ui.set_textfield_text(self.ui.textfield_message, self.content.get("Messages")[self.last_message_index])
 
     def _trigger_selected(self, event):
         curselection = self.ui.listbox_triggers.curselection()
 
-        if self.scenario_loaded and len(self.content.get("Triggers")) > 0 and len(curselection) > 0:
+        if len(self.content.get("Triggers")) > 0 and len(curselection) > 0:
             self.content.get("Triggers")[self.last_trigger_index].text = self.ui.textfield_triggers.get(1.0, "end")
             self.last_trigger_index = self.ui.listbox_triggers.curselection()[0]
 
