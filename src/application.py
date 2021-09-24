@@ -1,4 +1,5 @@
 import os
+import webbrowser
 from tkinter.filedialog import askopenfilename
 from tkinter.filedialog import asksaveasfilename
 
@@ -22,6 +23,7 @@ STATUS_WRITING_FAILED = " could not be written"
 STATUS_INVALID_FILE_NAME = "invalid file name "
 FILETYPES = [("AoE2DE scenario file", "*.aoe2scenario")]
 SCENARIO_FILE_EXTENSION = ".aoe2scenario"
+GITHUB_DOC = "https://google.com"
 
 
 # application class
@@ -47,6 +49,7 @@ class App:
         self.ui.menu_file.entryconfig(ui.MENU_RELOAD, command=self._reload_content)
         self.ui.menu_file.entryconfig(ui.MENU_SAVE, command=lambda: self._write(False))
         self.ui.menu_file.entryconfig(ui.MENU_SAVE_AS, command=lambda: self._write(True))
+        self.ui.menu_help.entryconfig(ui.MENU_HELP, command=self._help)
         self.ui.entry_file_name.bind("<FocusOut>", self._entry_file_name_focus_lost)
         self.ui.combobox_message.bind("<<ComboboxSelected>>", self._message_selected)
         self.ui.listbox_triggers.bind("<<ListboxSelect>>", self._trigger_selected)
@@ -227,6 +230,10 @@ class App:
             self.ui.set_status(file_name + STATUS_WRITING_FAILED)
 
         self.ui.lock(False)
+
+    @staticmethod
+    def _help():
+        webbrowser.open(GITHUB_DOC)
 
     # gets called when the focus on the internal file name entry has been lost
     def _entry_file_name_focus_lost(self, _event):
