@@ -44,8 +44,8 @@ class App:
     def _bind_functions(self):
         self.ui.menu_file.entryconfig(ui.MENU_OPEN, command=self._open_file)
         self.ui.menu_file.entryconfig(ui.MENU_RELOAD, command=self._reload_content)
-        self.ui.menu_file.entryconfig(ui.MENU_SAVE, command=lambda: self._save(False))
-        self.ui.menu_file.entryconfig(ui.MENU_SAVE_AS, command=lambda: self._save(True))
+        self.ui.menu_file.entryconfig(ui.MENU_SAVE, command=lambda: self._write(False))
+        self.ui.menu_file.entryconfig(ui.MENU_SAVE_AS, command=lambda: self._write(True))
         self.ui.entry_file_name.bind("<FocusOut>", self._entry_file_name_focus_lost)
         self.ui.combobox_message.bind("<<ComboboxSelected>>", self._message_selected)
         self.ui.listbox_triggers.bind("<<ListboxSelect>>", self._trigger_selected)
@@ -150,7 +150,7 @@ class App:
         self._load_content()
         self._display_content()
 
-    def _prepare_save(self):
+    def _prepare_write(self):
         self.content.internal_file_name = self.ui.entry_file_name.get() + SCENARIO_FILE_EXTENSION
 
         for player_index in range(0, len(self.ui.player_entries)):
@@ -165,7 +165,7 @@ class App:
         self.content.get("Messages")[self.last_message_index] = self.ui.textfield_message.get(1.0, "end")
         self.content.get("Triggers")[self.last_trigger_index].text = self.ui.textfield_triggers.get(1.0, "end")
 
-    def _save_content(self):
+    def _save_content_to_scenario(self):
         # data header section
         data_header_section = self.scenario_handler.get_section("DataHeader")
 
@@ -194,9 +194,9 @@ class App:
             elif item.type == ti.TYPE_EFFECT_MESSAGE:
                 triggers[item.trigger_index].effects[item.effect_index].message = item.text
 
-    def _save(self, save_as):
-        self._prepare_save()
-        self._save_content()
+    def _write(self, save_as):
+        self._prepare_write()
+        self._save_content_to_scenario()
 
         if save_as:
             self.file_path = asksaveasfilename(filetypes=FILETYPES)
