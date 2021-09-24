@@ -220,16 +220,16 @@ class App:
 
         self.ui.lock(False)
 
-    def _entry_file_name_focus_lost(self, event):
+    def _entry_file_name_focus_lost(self, _event):
         self.content.internal_file_name = self.ui.entry_file_name.get() + SCENARIO_FILE_EXTENSION
 
-    def _message_selected(self, event):
+    def _message_selected(self, _event):
         self.content.get("Messages")[self.last_message_index] = self.ui.textfield_message.get(1.0, "end")
         self.last_message_index = self.ui.combobox_message.current()
 
         self.ui.set_textfield_text(self.ui.textfield_message, self.content.get("Messages")[self.last_message_index])
 
-    def _trigger_selected(self, event):
+    def _trigger_selected(self, _event):
         curselection = self.ui.listbox_triggers.curselection()
 
         if len(self.content.get("Triggers")) > 0 and len(curselection) > 0:
