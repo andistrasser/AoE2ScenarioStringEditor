@@ -62,17 +62,22 @@ class App:
 
         file_name = os.path.basename(self.file_path)
 
+        self.ui.lock(True)
+
         try:
             self.ui.set_status(STATUS_READING + file_name)
             self.scenario = self.scenario_handler.load_scenario()
             self.content.clear()
             self._load_content()
-            self.ui.lock(False)
-            self._display_content()
             self.scenario_loaded = True
             self.ui.set_status(file_name + STATUS_READING_SUCCESSFUL)
-        except:
+        except Exception as ex:
+            self.ui.show_error_dialog(ex)
             self.ui.set_status(file_name + STATUS_READING_FAILED)
+
+        if self.scenario_loaded:
+            self.ui.lock(False)
+            self._display_content()
 
     def _load_content(self):
         # data header section
@@ -139,7 +144,8 @@ class App:
             else:
                 self.ui.listbox_triggers.insert("end", trigger_item.name)
 
-        ui.set_textfield_text(self.ui.textfield_triggers, self.content.get("Triggers")[self.last_trigger_index].text)
+        ui.set_textfield_text(self.ui.textfield_triggers,
+                              self.content.get("Triggers")[self.last_trigger_index].text)
         ui.set_textfield_text(self.ui.textfield_raw, self.content.get("Raw"))
 
     def _reload_content(self):
@@ -206,9 +212,17 @@ class App:
 
         file_name = os.path.basename(self.file_path)
 
-        self.ui.set_status(STATUS_WRITING + file_name)
-        self.scenario_handler.save_scenario(self.scenario, self.file_path)
-        self.ui.set_status(file_name + STATUS_WRITING_SUCCESSFUL)
+        self.ui.lock(True)
+
+        try:
+            self.ui.set_status(STATUS_WRITING + file_name)
+            self.scenario_handler.save_scenario(self.scenario, self.file_path)
+            self.ui.set_status(file_name + STATUS_WRITING_SUCCESSFUL)
+        except Exception as ex:
+            self.ui.show_error_dialog(ex)
+            self.ui.set_status(file_name + STATUS_WRITING_FAILED)
+
+        self.ui.lock(False)
 
     def _entry_file_name_focus_lost(self, event):
         self.content.internal_file_name = self.ui.entry_file_name.get() + SCENARIO_FILE_EXTENSION

@@ -1,6 +1,7 @@
 import os
 import sys
 import tkinter as tk
+from tkinter import messagebox
 from tkinter import scrolledtext
 from tkinter import ttk
 
@@ -194,3 +195,7 @@ class UserInterface(tk.Tk):
     def set_status(self, text):
         self.status.set(text)
         self.update()
+
+    @staticmethod
+    def show_error_dialog(message):
+        messagebox.showerror("Error", message)
