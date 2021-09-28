@@ -6,6 +6,14 @@ outside the in-game editor.
 
 It can be used to translate scenarios in a quick and easy way or to make small text changes after creating the scenario.
 
+## Download
+
+[Windows](https://github.com/andistrasser/AoE2ScenarioStringEditor/raw/dev/build/windows/latest/AoE2ScenarioStringEditor.zip">
+)
+
+[Linux](https://github.com/andistrasser/AoE2ScenarioStringEditor/raw/dev/build/linux/latest/AoE2ScenarioStringEditor.zip">
+)
+
 ## Documentation
 
 [How to use AoE2ScenarioStringEditor](https://github.com/andistrasser/AoE2ScenarioStringEditor/blob/dev/docs/DOC.md)
