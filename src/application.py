@@ -190,8 +190,8 @@ class App:
 
             self.content.get("Players")[player_index] = player_name
 
-        self.content.get("Messages")[self.last_message_index] = self.ui.textfield_message.get(1.0, "end")
-        self.content.get("Triggers")[self.last_trigger_index].text = self.ui.textfield_triggers.get(1.0, "end")
+        self.content.get("Messages")[self.last_message_index] = self.ui.textfield_message.get(1.0, "end-1c")
+        self.content.get("Triggers")[self.last_trigger_index].text = self.ui.textfield_triggers.get(1.0, "end-1c")
 
     # writes the content to the scenario file
     def _write_content_to_scenario(self):
@@ -205,6 +205,7 @@ class App:
 
         # messages section
         messages_section = self.scenario_handler.get_section("Messages")
+
         messages_section.ascii_instructions = self.content.get("Messages")[0]
         messages_section.ascii_hints = self.content.get("Messages")[1]
         messages_section.ascii_victory = self.content.get("Messages")[2]
@@ -228,7 +229,7 @@ class App:
         if self.scenario_handler is not None and self.scenario_handler.is_scenario_loaded():
             self._prepare_write()
             self._write_content_to_scenario()
-    
+
             if save_as:
                 self.file_path = asksaveasfilename(filetypes=FILETYPES)
 
@@ -265,7 +266,7 @@ class App:
 
     # gets called when a message combobox item has been selected
     def _message_selected(self, _event):
-        self.content.get("Messages")[self.last_message_index] = self.ui.textfield_message.get(1.0, "end")
+        self.content.get("Messages")[self.last_message_index] = self.ui.textfield_message.get(1.0, "end-1c")
         self.last_message_index = self.ui.combobox_message.current()
 
         self.ui.set_textfield_text(self.ui.textfield_message, self.content.get("Messages")[self.last_message_index])
@@ -275,7 +276,7 @@ class App:
         curselection = self.ui.listbox_triggers.curselection()
 
         if len(self.content.get("Triggers")) > 0 and len(curselection) > 0:
-            self.content.get("Triggers")[self.last_trigger_index].text = self.ui.textfield_triggers.get(1.0, "end")
+            self.content.get("Triggers")[self.last_trigger_index].text = self.ui.textfield_triggers.get(1.0, "end-1c")
             self.last_trigger_index = self.ui.listbox_triggers.curselection()[0]
 
             self.ui.set_textfield_text(self.ui.textfield_triggers,
@@ -283,5 +284,5 @@ class App:
 
     # gets called when the apply button has been clicked
     def _button_apply_clicked(self):
-        self.content.apply_raw_content(self.ui.textfield_raw.get(1.0, "end"))
+        self.content.apply_raw_content(self.ui.textfield_raw.get(1.0, "end-1c"))
         self._display_content()
