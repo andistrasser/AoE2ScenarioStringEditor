@@ -182,7 +182,7 @@ class App:
             player_name = self.ui.player_entries[player_index].get()
 
             for char_index in range(0, 256):
-                if char_index >= len(player_name):
+                if char_index >= len(player_name.encode("utf-8")):
                     player_name += "\x00"
 
             self.content.get("Players")[player_index] = player_name
