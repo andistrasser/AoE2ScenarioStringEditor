@@ -23,7 +23,7 @@ STATUS_WRITING_FAILED = " could not be written"
 STATUS_INVALID_FILE_NAME = "invalid file name "
 FILETYPES = [("AoE2DE scenario file", "*.aoe2scenario")]
 SCENARIO_FILE_EXTENSION = ".aoe2scenario"
-HELP_GITHUB_DOC = "https://google.com"
+HELP_GITHUB_DOC = "https://github.com/andistrasser/AoE2ScenarioStringEditor/blob/dev/docs/DOC.md"
 ABOUT_TITLE = "About"
 ABOUT_MESSAGE = "Autor: andistrasser\nGithub: https://github.com/andistrasser"
 
