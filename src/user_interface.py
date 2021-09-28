@@ -141,11 +141,14 @@ class UserInterface(tk.Tk):
         # triggers tab widgets
         self.listbox_triggers = tk.Listbox(tab_triggers, width=60)
         self.listbox_triggers.grid(row=0, column=0, padx=(10, 0), pady=10, sticky="ewns")
+        scrollbar_triggers = Scrollbar(tab_triggers, orient="vertical", command=self.listbox_triggers.yview)
+        scrollbar_triggers.grid(row=0, column=1, pady=10, sticky="ns")
+        self.listbox_triggers.config(yscrollcommand=scrollbar_triggers.set)
 
         self.textfield_triggers = scrolledtext.ScrolledText(tab_triggers)
-        self.textfield_triggers.grid(row=0, column=1, padx=10, pady=10, sticky="ewns")
+        self.textfield_triggers.grid(row=0, column=2, padx=10, pady=10, sticky="ewns")
         tab_triggers.columnconfigure(0, weight=1)
-        tab_triggers.columnconfigure(1, weight=1)
+        tab_triggers.columnconfigure(2, weight=1)
         tab_triggers.rowconfigure(0, weight=1)
 
         # raw tab widgets
