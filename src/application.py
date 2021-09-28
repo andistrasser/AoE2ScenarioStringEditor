@@ -158,10 +158,13 @@ class App:
         self.ui.listbox_triggers.delete(0, "end")
 
         for trigger_item in self.content.get("Triggers"):
-            if trigger_item.effect_index != ti.NO_EFFECT:
-                self.ui.listbox_triggers.insert("end", trigger_item.name + " - E#" + str(trigger_item.effect_index))
+            if trigger_item.type == ti.TYPE_EFFECT_MESSAGE:
+                self.ui.listbox_triggers.insert("end",
+                                                trigger_item.name + " - [E#" + str(trigger_item.effect_index) + "]")
+            elif trigger_item.type == ti.TYPE_OBJECTIVE_LONG:
+                self.ui.listbox_triggers.insert("end", trigger_item.name + " - [Obj. long]")
             else:
-                self.ui.listbox_triggers.insert("end", trigger_item.name)
+                self.ui.listbox_triggers.insert("end", trigger_item.name + " - [Obj. short]")
 
         self.ui.set_textfield_text(self.ui.textfield_triggers,
                                    self.content.get("Triggers")[self.last_trigger_index].text)
