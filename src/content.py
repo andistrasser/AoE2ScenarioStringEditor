@@ -56,7 +56,7 @@ class Content:
 
     # fills the content container with the content of the raw section
     def apply_raw_content(self, raw_content):
-        self._content["Raw"] = raw_content
+        self._content["Raw"] = (raw_content + "\n")
         raw_lines = []
         start_index = 0
 
