@@ -101,7 +101,7 @@ class UserInterface(tk.Tk):
         tab_container.add(tab_messages, text=LABEL_TAB_MESSAGES)
         tab_container.add(tab_triggers, text=LABEL_TAB_TRIGGERS)
         tab_container.add(tab_raw, text=LABEL_TAB_RAW)
-        tab_container.grid(row=0, column=0, padx=10, pady=10, sticky="ewns")
+        tab_container.grid(row=0, column=0, padx=6, pady=(7, 2), sticky="ewns")
 
         # general tab widgets
         label_scenario_name = ttk.Label(tab_general, text=LABEL_SCENARIO_NAME)
