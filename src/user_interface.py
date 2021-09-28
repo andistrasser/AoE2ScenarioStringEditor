@@ -174,6 +174,9 @@ class UserInterface(tk.Tk):
         self.columnconfigure(0, weight=1)
         self.rowconfigure(0, weight=1)
 
+        if self.style.theme_use() == THEME_WINDOWS:
+            self.listbox_triggers.config(activestyle="none", highlightthickness=0)
+
     # locks the ui to prevent unwanted input
     def lock(self, lock):
         state = "normal"
