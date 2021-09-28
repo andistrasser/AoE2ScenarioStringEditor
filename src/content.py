@@ -22,6 +22,17 @@ class Content:
         if section in WRITEABLE_SECTIONS:
             self._content[section].append(item)
 
+    # replaces CRLF linefeed with LF
+    def clean_linefeed(self):
+        for index in range(0, len(self._content["Players"])):
+            self._content["Players"][index] = self._content["Players"][index].replace("\r\n", "\n")
+
+        for index in range(0, len(self._content["Messages"])):
+            self._content["Messages"][index] = self._content["Messages"][index].replace("\r\n", "\n")
+
+        for index in range(0, len(self._content["Triggers"])):
+            self._content["Triggers"][index].text = self._content["Triggers"][index].text.replace("\r\n", "\n")
+
     # creates the raw content where each item of the content container consists of one line
     def create_raw_content(self):
         for player in self._content["Players"]:
