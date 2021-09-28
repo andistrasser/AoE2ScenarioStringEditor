@@ -7,4 +7,4 @@ in order to run.
 
 ### File Menu
 
-![File Menu](https://github.com/andistrasser/AoE2ScenarioStringEditor/tree/dev/docs/images/doc_6.png)
+![File Menu](https://github.com/andistrasser/AoE2ScenarioStringEditor/tree/dev/docs/images/doc_6.png?raw=true)
