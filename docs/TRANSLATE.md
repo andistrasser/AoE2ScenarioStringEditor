@@ -8,11 +8,10 @@
 4. Open AoE2ScenarioStringEditor.exe
 5. Open the scenario you want to translate with File -> Open or by hitting Ctrl+O
 6. Once the scenario has been loaded, navigate to the "Raw" tab
-   [abc]()
 7. Copy the content of the textfield and paste it into a translator of your choice (
    e.g. [DeepL Translator](https://www.deepl.com/translator) and/or translate it manually. Note that you have to ensure
-   that the line structure will stay the same after translating in order to apply the translated text correctly. Also
-   ensure to keep the "\n" symbols or line breaks will be lost after applying.
+   that the line structure will stay the same after translating in order to be able to apply the translated text
+   correctly. Also ensure to keep the "\n" symbols or line breaks will be lost after applying.
 8. Paste the translated text into the textfield and hit the "Apply" button.
 9. You can now check if everything was applied correctly and save the scenario with File -> Save/Save as or by hitting
    the respective shortcuts.
