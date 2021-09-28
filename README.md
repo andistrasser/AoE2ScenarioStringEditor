@@ -8,9 +8,9 @@ It can be used to translate scenarios in a quick and easy way or to make small t
 
 ## Download
 
-[Windows](https://github.com/andistrasser/AoE2ScenarioStringEditor/raw/dev/build/windows/latest/AoE2ScenarioStringEditor.zip)
+[Windows](https://github.com/andistrasser/AoE2ScenarioStringEditor/raw/dev/build/windows/AoE2ScenarioStringEditor.zip)
 
-[Linux](https://github.com/andistrasser/AoE2ScenarioStringEditor/raw/dev/build/linux/latest/AoE2ScenarioStringEditor.zip)
+[Linux](https://github.com/andistrasser/AoE2ScenarioStringEditor/raw/dev/build/linux/AoE2ScenarioStringEditor.zip)
 
 ## Documentation
 
