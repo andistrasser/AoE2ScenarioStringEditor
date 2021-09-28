@@ -1,6 +1,7 @@
 import os
 import sys
 import tkinter as tk
+from tkinter import Scrollbar
 from tkinter import messagebox
 from tkinter import scrolledtext
 from tkinter import ttk
