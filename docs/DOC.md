@@ -8,7 +8,7 @@ in order to run.
 - Open [Ctrl+O]: Opens and reads an `aoe2scenario` scenario file
 - Reload [Ctrl+R]: Discards the changes made by the user and reloads the strings from the scenario file
 - Save [Ctrl+S]: Writes the changes to the scenario file
-- Save as [Ctrl+Alt+S]: Saves the scenario file to a desired location
+- Save as [Ctrl+Alt+S]: Writes the scenario file to a desired location
 - Exit [Ctrl+Q]: Quits the program
 
 ## General tab

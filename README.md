@@ -4,7 +4,7 @@ This tool gives you the ability to edit the text content of an `aoe2scenario` fi
 Edition**
 outside the in-game editor.
 
-It can be used to translate scenarios in a quick and easy way or to make small text changes after creating the scenario.
+It can be used to translate scenarios in a quick and easy way or to make text changes after creating a scenario.
 
 ## Download
 
