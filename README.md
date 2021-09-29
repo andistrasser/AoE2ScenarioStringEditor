@@ -29,7 +29,7 @@ Both issues are caused by the AoE2ScenarioParser library and will be fixed in th
 ## Changelog
 
 Detailed info about bug fixes and progress can be found in
-the [CHANGELOG](https://github.com/andistrasser/AoE2ScenarioStringEditor/blob/master/docs/CHANGELOG.md) file.
+the [CHANGELOG](https://github.com/andistrasser/AoE2ScenarioStringEditor/blob/master/CHANGELOG.md) file.
 
 ## Author
 
