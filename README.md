@@ -18,6 +18,14 @@ It can be used to translate scenarios in a quick and easy way or to make text ch
 
 [How to translate a scenario](https://github.com/andistrasser/AoE2ScenarioStringEditor/blob/dev/docs/TRANSLATE.md)
 
+## Known Issues
+
+- Opening scenarios of different versions in the same instance doesn't work at the moment. (Workaround: Close
+  AoE2ScenarioStringEditor, reopen it and it will work again)
+- Opening scenarios which contain cinematics (concerns some scenarios ported from AoK or HD) doesn't work at the moment.
+
+Both issues are caused by the AoE2ScenarioParser library and will be fixed in the future.
+
 ## Author
 
 - Andreas Strasser
