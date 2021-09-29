@@ -25,7 +25,7 @@ FILETYPES = [("AoE2DE scenario file", "*.aoe2scenario")]
 SCENARIO_FILE_EXTENSION = ".aoe2scenario"
 HELP_GITHUB_DOC = "https://github.com/andistrasser/AoE2ScenarioStringEditor/blob/dev/docs/DOC.md"
 ABOUT_TITLE = "About"
-ABOUT_MESSAGE = "Version: 1.0.1\nAutor: andistrasser\nGithub: https://github.com/andistrasser"
+ABOUT_MESSAGE = "Autor: andistrasser\nGithub: https://github.com/andistrasser"
 
 
 # application class
