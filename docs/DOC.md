@@ -18,7 +18,7 @@ editor interface as well as on the scenario selection screen when there is no ex
 
 ## Players tab
 
-Here you can change the names of the players (civilizations) which will be displayed on the in-game overlay.
+Here you can change the names of the players ("Tribe name") which will be displayed on the in-game overlay.
 
 ## Messages tab
 
@@ -36,9 +36,9 @@ textfield on the right side.
 This is probably the most useful of all tabs. It contains all the text displayed on the previous tabs. Each individual
 line represents one entry.
 
-- line 1-8 player names
-- line 9-14 messages (Scenario Instructions, Hints, Victory, Loss, History, Scout)
-- line 15-End triggers
+- line 1-8: player names
+- line 9-14: messages (Scenario Instructions, Hints, Victory, Loss, History, Scout)
+- line 15-end: triggers
 
 With the "Apply" button the content of the textfield will be loaded in the respective entries on the other tabs. This is
 especially useful if you want to translate the scenario. It is very important to keep empty lines as well as the new
