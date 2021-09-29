@@ -141,7 +141,7 @@ class UserInterface(tk.Tk):
         tab_messages.rowconfigure(0, weight=1)
 
         # triggers tab widgets
-        self.listbox_triggers = tk.Listbox(tab_triggers, width=60)
+        self.listbox_triggers = tk.Listbox(tab_triggers, width=60, exportselection=False)
         self.listbox_triggers.grid(row=0, column=0, padx=(10, 0), pady=10, sticky="ewns")
         scrollbar_triggers = Scrollbar(tab_triggers, orient="vertical", command=self.listbox_triggers.yview)
         scrollbar_triggers.grid(row=0, column=1, pady=10, sticky="ns")
