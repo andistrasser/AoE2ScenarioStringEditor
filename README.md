@@ -14,9 +14,9 @@ It can be used to translate scenarios in a quick and easy way or to make text ch
 
 ## Documentation
 
-[How to use AoE2ScenarioStringEditor](https://github.com/andistrasser/AoE2ScenarioStringEditor/blob/dev/docs/DOC.md)
+[How to use AoE2ScenarioStringEditor](https://github.com/andistrasser/AoE2ScenarioStringEditor/blob/master/docs/DOC.md)
 
-[How to translate a scenario](https://github.com/andistrasser/AoE2ScenarioStringEditor/blob/dev/docs/TRANSLATE.md)
+[How to translate a scenario](https://github.com/andistrasser/AoE2ScenarioStringEditor/blob/master/docs/TRANSLATE.md)
 
 ## Known Issues
 
@@ -25,6 +25,10 @@ It can be used to translate scenarios in a quick and easy way or to make text ch
 - Opening scenarios which contain cinematics (concerns some scenarios ported from AoK or HD) doesn't work at the moment.
 
 Both issues are caused by the AoE2ScenarioParser library and will be fixed in the future.
+
+## Changelog
+
+[CHANGELOG](https://github.com/andistrasser/AoE2ScenarioStringEditor/blob/master/docs/CHANGELOG.md)
 
 ## Author
 
@@ -38,4 +42,4 @@ the [AoE2ScenarioParser](https://github.com/KSneijders/AoE2ScenarioParser) libra
 ## License
 
 GNU General Public License v3.0: Please see
-the [LICENSE](https://github.com/andistrasser/AoE2ScenarioStringEditor/blob/dev/LICENSE) file.
+the [LICENSE](https://github.com/andistrasser/AoE2ScenarioStringEditor/blob/master/LICENSE) file.
