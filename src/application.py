@@ -273,7 +273,6 @@ class App:
         self.last_message_index = self.ui.combobox_message.current()
 
         self.ui.set_textfield_text(self.ui.textfield_message, self.content.get("Messages")[self.last_message_index])
-        print(self.content.get("Messages")[self.last_message_index])
 
     # gets called when a trigger has been selected
     def _trigger_selected(self, _event):
