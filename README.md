@@ -8,9 +8,13 @@ It can be used to translate scenarios in a quick and easy way or to make text ch
 
 ## Download
 
-[Windows](https://github.com/andistrasser/AoE2ScenarioStringEditor/raw/dev/build/windows/AoE2ScenarioStringEditor.zip)
+Windows:
 
-[Linux](https://github.com/andistrasser/AoE2ScenarioStringEditor/raw/dev/build/linux/AoE2ScenarioStringEditor.zip)
+[AoE2ScenarioStringEditor 1.0.3](https://github.com/andistrasser/AoE2ScenarioStringEditor/raw/dev/build/windows/AoE2ScenarioStringEditor.zip)
+
+Linux:
+
+[AoE2ScenarioStringEditor 1.0.3](https://github.com/andistrasser/AoE2ScenarioStringEditor/raw/dev/build/linux/AoE2ScenarioStringEditor.zip)
 
 ## Documentation
 
@@ -20,11 +24,9 @@ It can be used to translate scenarios in a quick and easy way or to make text ch
 
 ## Known Issues
 
-- Opening scenarios of different versions in the same instance doesn't work at the moment. (Workaround: Close
-  AoE2ScenarioStringEditor, reopen it and it will work again)
-- Opening scenarios which contain cinematics (concerns some scenarios ported from AoK or HD) doesn't work at the moment.
-
-Both issues are caused by the AoE2ScenarioParser library and will be fixed in the future.
+- Opening scenarios of different versions in the same instance doesn't work at the moment. This issue is caused by the
+  AoE2ScenarioParser library and will be fixed in the future. (Workaround: Close AoE2ScenarioStringEditor, reopen it and
+  it will work again)
 
 ## Changelog
 
