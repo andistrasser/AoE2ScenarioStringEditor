@@ -1,3 +1,7 @@
+### Version 1.0.2
+
+- always highlight trigger list selection
+
 ### Version 1.0.1
 
 - fixed bug with CR line breaks
