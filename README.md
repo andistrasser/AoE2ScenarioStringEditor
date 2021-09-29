@@ -1,7 +1,7 @@
 # AoE2ScenarioStringEditor
 
-This tool gives you the ability to edit the text content of an `aoe2scenario` file from **Age of Empires 2 Definitive
-Edition**
+This tool gives you the possibility to edit the text content of an `aoe2scenario` file from **Age of Empires 2
+Definitive Edition**
 outside the in-game editor.
 
 It can be used to translate scenarios in a quick and easy way or to make text changes after creating a scenario.
