@@ -10,11 +10,11 @@ It can be used to translate scenarios in a quick and easy way or to make text ch
 
 Windows:
 
-[AoE2ScenarioStringEditor 1.0.4](https://github.com/andistrasser/AoE2ScenarioStringEditor/raw/dev/build/windows/AoE2ScenarioStringEditor.zip)
+[AoE2ScenarioStringEditor 1.0.4](https://github.com/andistrasser/AoE2ScenarioStringEditor/raw/master/build/windows/AoE2ScenarioStringEditor.zip)
 
 Linux:
 
-[AoE2ScenarioStringEditor 1.0.4](https://github.com/andistrasser/AoE2ScenarioStringEditor/raw/dev/build/linux/AoE2ScenarioStringEditor.zip)
+[AoE2ScenarioStringEditor 1.0.4](https://github.com/andistrasser/AoE2ScenarioStringEditor/raw/master/build/linux/AoE2ScenarioStringEditor.zip)
 
 ## Documentation
 
