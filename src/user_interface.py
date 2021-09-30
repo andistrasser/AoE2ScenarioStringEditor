@@ -55,7 +55,7 @@ class UserInterface(tk.Tk):
         if THEME_WINDOWS in self.style.theme_names():
             self.style.theme_use(THEME_WINDOWS)
 
-            icon = "sse.ico"
+            icon = "aoe2_sse.ico"
 
             if not hasattr(sys, "frozen"):
                 icon = os.path.join(os.path.dirname(__file__), icon)
