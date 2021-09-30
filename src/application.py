@@ -20,7 +20,6 @@ STATUS_READING_FAILED = " could not be read"
 STATUS_WRITING = "writing "
 STATUS_WRITING_SUCCESSFUL = " written successfully"
 STATUS_WRITING_FAILED = " could not be written"
-STATUS_INVALID_FILE_NAME = "invalid file name "
 FILETYPES = [("AoE2DE scenario file", "*.aoe2scenario")]
 SCENARIO_FILE_EXTENSION = ".aoe2scenario"
 HELP_GITHUB_DOC = "https://github.com/andistrasser/AoE2ScenarioStringEditor/blob/dev/docs/DOC.md"
@@ -235,11 +234,15 @@ class App:
 
             if save_as:
                 self.file_path = asksaveasfilename(filetypes=FILETYPES)
+                print(os.path.splitext(self.file_path)[1])
 
                 if len(self.file_path) == 0:
                     return
-                elif SCENARIO_FILE_EXTENSION not in self.file_path:
-                    self.ui.set_status(STATUS_INVALID_FILE_NAME + os.path.basename(self.file_path))
+
+                extension = os.path.splitext(self.file_path)[1]
+
+                if extension == "" or extension != SCENARIO_FILE_EXTENSION:
+                    self.file_path += SCENARIO_FILE_EXTENSION
 
             file_name = os.path.basename(self.file_path)
 
