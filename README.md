@@ -26,6 +26,9 @@ Linux:
 
 ## Known Issues
 
+- The single-file application may be detected as false positive by some antivirus software. This can't be avoided since
+  I use PyInstaller for building the executable. You can either exclude AoE2ScenarioStringEditor.exe in your antivirus
+  software or you can download the non-single-file application which should make no problems.
 - Opening scenarios of different versions in the same instance doesn't work at the moment. This issue is caused by the
   AoE2ScenarioParser library and will be fixed in the future. (Workaround: Close AoE2ScenarioStringEditor, reopen it and
   it will work again)
