@@ -1,3 +1,7 @@
+### 1.0.5 - 09.12.2021
+
+- updated AoE2ScenarioParser library to version 0.1.28
+
 ### 1.0.4 - 30.09.2021
 
 - added file extension on "Save as" when not specified
