@@ -19,6 +19,10 @@ class ScenarioHandler:
     def get_triggers(self):
         return self.scenario.trigger_manager.triggers
 
+    # gets the players of the scenario
+    def get_players(self):
+        return self.scenario.player_manager.players
+
     # save the scenario to the file system
     def save_scenario(self, file_path):
         self.scenario.write_to_file(file_path)
