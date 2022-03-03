@@ -104,7 +104,7 @@ class App:
         self.content.internal_file_name = data_header_section.filename
 
         for index in range(0, 8):
-            player_name = data_header_section.player_names[index]
+            player_name = data_header_section.tribe_names[index]
 
             self.content.add_item_to_section("Players", player_name.replace("\x00", ""))
 
@@ -207,7 +207,7 @@ class App:
         data_header_section.filename = self.content.internal_file_name
 
         for index in range(0, 8):
-            data_header_section.player_names[index] = self.content.get("Players")[index]
+            data_header_section.tribe_names[index] = self.content.get("Players")[index]
 
         # messages section
         messages_section = self.scenario_handler.get_section("Messages")
