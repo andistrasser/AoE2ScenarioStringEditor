@@ -168,8 +168,10 @@ class App:
             else:
                 self.ui.listbox_triggers.insert("end", trigger_item.name + " - [Obj. short]")
 
-        self.ui.set_textfield_text(self.ui.textfield_triggers,
-                                   self.content.get("Triggers")[self.last_trigger_index].text)
+        if len(self.content.get("Triggers")) > 0:
+            self.ui.set_textfield_text(self.ui.textfield_triggers,
+                                       self.content.get("Triggers")[self.last_trigger_index].text)
+
         self.ui.set_textfield_text(self.ui.textfield_raw, self.content.get("Raw"))
 
     # reloads the content from the scenario file
@@ -193,7 +195,9 @@ class App:
             self.content.get("Players")[player_index] = player_name
 
         self.content.get("Messages")[self.last_message_index] = self.ui.textfield_message.get(1.0, "end-1c")
-        self.content.get("Triggers")[self.last_trigger_index].text = self.ui.textfield_triggers.get(1.0, "end-1c")
+
+        if len(self.content.get("Triggers")) > 0:
+            self.content.get("Triggers")[self.last_trigger_index].text = self.ui.textfield_triggers.get(1.0, "end-1c")
 
     # writes the content to the scenario file
     def _write_content_to_scenario(self):
