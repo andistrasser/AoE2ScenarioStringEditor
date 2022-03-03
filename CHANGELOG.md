@@ -1,3 +1,8 @@
+### 1.0.6 - 03.03.2022
+
+- updated AoE2ScenarioParser library to version 0.1.34 (slightly modified to enable loading of older scenario files)
+- fixed bug with scenarios without any triggers
+
 ### 1.0.5 - 09.12.2021
 
 - updated AoE2ScenarioParser library to version 0.1.28
