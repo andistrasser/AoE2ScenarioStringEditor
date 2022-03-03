@@ -9,6 +9,7 @@ from content import Content
 from scenario_handler import ScenarioHandler
 from trigger_item import TriggerItem
 from user_interface import UserInterface
+from AoE2ScenarioParser.datasets.players import PlayerId
 
 # constants
 EFFECT_56 = 56
@@ -104,9 +105,9 @@ class App:
         self.content.internal_file_name = data_header_section.filename
 
         for index in range(0, 8):
-            player_name = data_header_section.tribe_names[index]
+            player_name = self.scenario_handler.get_players()[index + 1].tribe_name
 
-            self.content.add_item_to_section("Players", player_name.replace("\x00", ""))
+            self.content.add_item_to_section("Players", player_name)
 
         # messages section
         messages_section = self.scenario_handler.get_section("Messages")
@@ -186,13 +187,7 @@ class App:
         self.content.internal_file_name = self.ui.entry_file_name.get() + SCENARIO_FILE_EXTENSION
 
         for player_index in range(0, len(self.ui.player_entries)):
-            player_name = self.ui.player_entries[player_index].get()
-
-            for char_index in range(0, 256):
-                if char_index >= len(player_name.encode("utf-8")):
-                    player_name += "\x00"
-
-            self.content.get("Players")[player_index] = player_name
+            self.content.get("Players")[player_index] = self.ui.player_entries[player_index].get()
 
         self.content.get("Messages")[self.last_message_index] = self.ui.textfield_message.get(1.0, "end-1c")
 
@@ -207,7 +202,7 @@ class App:
         data_header_section.filename = self.content.internal_file_name
 
         for index in range(0, 8):
-            data_header_section.tribe_names[index] = self.content.get("Players")[index]
+            self.scenario_handler.get_players()[index + 1].tribe_name = self.content.get("Players")[index]
 
         # messages section
         messages_section = self.scenario_handler.get_section("Messages")
