@@ -32,6 +32,8 @@ Linux:
 - Opening scenarios of different versions in the same instance doesn't work at the moment. This issue is caused by the
   AoE2ScenarioParser library and will be fixed in the future. (Workaround: Close AoE2ScenarioStringEditor, reopen it and
   it will work again)
+- Older scenario files (below 1.40) cannot be loaded without an error at the moment. (Workaroud: Open the 
+  scenario in the in-game editor, save it and it should work again).
 
 ## Changelog
 
